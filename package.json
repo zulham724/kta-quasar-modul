@@ -12,10 +12,16 @@
     "@quasar/extras": "^1.0.0",
     "axios": "^0.18.1",
     "core-js": "^3.6.5",
-    "quasar": "^1.0.0"
+    "froala-editor": "^3.2.0",
+    "quasar": "^1.0.0",
+    "vue-email-editor": "^0.7.2",
+    "vue-froala-wysiwyg": "^3.2.0"
   },
   "devDependencies": {
-    "@quasar/app": "^2.0.0"
+    "@quasar/app": "^2.0.0",
+    "path": "^0.12.7",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12"
   },
   "browserslist": [
     "last 10 Chrome versions",
