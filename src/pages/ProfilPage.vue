@@ -2,9 +2,8 @@
   <div>
     <q-header>
       <q-toolbar style="background-color:#840000">
-        <q-btn flat dense icon="arrow_back" @click="$router.back()" />
         <q-toolbar-title>
-          <div class="text-body2 text-weight-light" style="font-size:15px">
+          <div class="q-px-sm text-body2 text-weight-light" style="font-size:15px">
             Profil
           </div>
         </q-toolbar-title>
@@ -14,8 +13,7 @@
       </q-toolbar>
     </q-header>
     <q-page class="column">
-      <div class="col-3">
-        <div class="q-pa-md">
+      <div class="col-3 q-pa-md">
           <q-item style="padding:0px">
             <q-item-section avatar>
               <q-avatar class=" text-center" rounded size="22vw">
@@ -26,14 +24,13 @@
               <q-item-label>
                 <div class="text-h6 text-weight-bold">John Cena</div>
               </q-item-label>
-              <q-item-label caption>
+              <q-item-label>
                 <div>No anggota:21211</div>
                 <div>admin</div>
                 <div>Visit poker66.co.id</div>
               </q-item-label>
             </q-item-section>
           </q-item>
-
           <div class="row q-pt-md align-left" style="font-size:40px">
             <div
               class="col-3 text-h5 text-bold q-mr-md"
@@ -57,7 +54,6 @@
               </div>
             </div>
           </div>
-        </div>
       </div>
       <div class="col">
         <q-tabs 
@@ -65,7 +61,7 @@
           dense
           class="text-black"
           active-color="white"
-          indicator-color="red-10"
+          indicator-color="transparent"
           align="justify"
         >
           <div class="row full-width text-weight-medium">
@@ -156,9 +152,6 @@
                     add
                 </span>
             </div>
-            <!-- <q-avatar size="60px" style="transform:translate(0%,-130%)">
-              <q-img src="~assets/add.png"> </q-img>
-            </q-avatar> -->
           </div>
         </div>
         <div 
