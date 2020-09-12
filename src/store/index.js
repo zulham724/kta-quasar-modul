@@ -1,7 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
-// import example from './module-example'
+// import the auto exporter
+import modules from './modules'
+import createLogger from 'vuex/dist/logger'
+import VuexPersistence from 'vuex-persist'
+// import Cookies from 'js-cookie'
+// import { LocalStorage } from 'quasar'
 
 Vue.use(Vuex)
 
@@ -13,17 +17,38 @@ Vue.use(Vuex)
  * async/await or return a Promise which resolves
  * with the Store instance.
  */
+const debug = process.env.DEV
 
-export default function (/* { ssrContext } */) {
-  const Store = new Vuex.Store({
-    modules: {
-      // example
-    },
+const vuexLocal = new VuexPersistence({
+    strictMode: true, // This **MUST** be set to true
+    storage: localStorage, // wich storage u want to use
+    reducer: (state) => ({ Auth: state.Auth }), // save given modules to storage
+})
 
-    // enable strict mode (adds overhead!)
-    // for dev mode only
-    strict: process.env.DEV
-  })
+export default function( /* { ssrContext } */ ) {
+    const Store = new Vuex.Store({
+        modules, // give auto import modules
+        // enable strict mode (adds overhead!)
+        // for dev mode only
+        strict: debug,
+        state: {},
+        mutations: {
+            RESTORE_MUTATION: vuexLocal.RESTORE_MUTATION // this mutation **MUST** be named "RESTORE_MUTATION"
+        },
+        plugins: debug ? [createLogger(), vuexLocal.plugin, ] : [vuexLocal.plugin, ] // set logger only for development
+    })
 
-  return Store
+    return Store
 }
+
+// export default new Vuex.Store({
+//     modules, // give auto import modules
+//     // enable strict mode (adds overhead!)
+//     // for dev mode only
+//     strict: debug,
+//     state: {},
+//     mutations: {
+//         RESTORE_MUTATION: vuexLocal.RESTORE_MUTATION // this mutation **MUST** be named "RESTORE_MUTATION"
+//     },
+//     plugins: debug ? [createLogger(), vuexLocal.plugin, ] : [vuexLocal.plugin, ] // set logger only for development
+// })

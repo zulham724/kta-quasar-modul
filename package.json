@@ -13,9 +13,13 @@
     "axios": "^0.18.1",
     "core-js": "^3.6.5",
     "froala-editor": "^3.2.0",
+    "html-to-image": "^0.1.1",
     "quasar": "^1.0.0",
     "vue-email-editor": "^0.7.2",
-    "vue-froala-wysiwyg": "^3.2.0"
+    "vue-froala-wysiwyg": "^3.2.0",
+    "vue-moment": "^4.1.0",
+    "vue-virtual-scroller": "^1.0.10",
+    "vuex-persist": "^2.2.0"
   },
   "devDependencies": {
     "@quasar/app": "^2.0.0",

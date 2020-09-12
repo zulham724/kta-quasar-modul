@@ -1,0 +1,5 @@
+creator_id=pembuat asli
+design=json dari vue-email-editor/unlayer
+https://github.com/unlayer/vue-email-editor
+image=hasil konversi html ke gambar (dalam bentuk url yg diupload ke wasabi) html-to-png
+modules berelasi one-to-one dgn templates (morph) 

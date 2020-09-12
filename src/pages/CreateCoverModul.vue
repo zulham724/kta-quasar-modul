@@ -1,5 +1,5 @@
 <template>
-  <div id="app" >
+<div id="app">
     <q-header>
         <q-toolbar style="background-color:#840000">
             <q-btn flat dense icon="arrow_back" @click="$router.back()" />
@@ -9,27 +9,27 @@
         </q-toolbar>
     </q-header>
     <div class="q-pa-sm">
-      <froala id="edit" :tag="'textarea'" :config="config" v-model="model"></froala>
+        <froala id="edit" :tag="'textarea'" :config="config" v-model="model"></froala>
     </div>
-  </div>
+</div>
 </template>
- 
+
 <script>
 import VueFroala from 'vue-froala-wysiwyg';
 // import froala from 'boot/vue-froala-wysiwyg';
 export default {
-  name: 'app',
-  data () {
-    return {
-      config: {
-        events: {
-          initialized: function () {
-            console.log('initialized')
-          }
+    name: 'app',
+    data() {
+        return {
+            config: {
+                events: {
+                    initialized: function () {
+                        console.log('initialized')
+                    }
+                }
+            },
+            model: 'Edit Your Content Here!'
         }
-      },
-      model: 'Edit Your Content Here!'
     }
-  }
 }
 </script>
