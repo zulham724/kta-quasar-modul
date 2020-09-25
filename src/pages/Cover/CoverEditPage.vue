@@ -2,7 +2,7 @@
 <div>
     <q-header>
         <q-toolbar style="background-color:#840000">
-            <q-btn flat dense icon="arrow_back" @click="$router.push({name:'create'})" />
+            <q-btn flat dense icon="arrow_back" @click="$router.push('/edit/'+ModuleForEdit.build.module_id)" />
             <q-toolbar-title>
                 <div class="text-body2 text-weight-light" style="font-size:15px">
                     Sampul Modul Template
@@ -71,11 +71,11 @@ import {
 
 export default {
     components: {
-        TemplateCover: () => import("components/CreateModul/TemplateCover.vue"),
-        MyCover: () => import("components/CreateModul/MyCover.vue")
+        TemplateCover: () => import("components/EditModul/TemplateCover.vue"),
+        MyCover: () => import("components/EditModul/MyCover.vue")
     },
     computed: {
-        ...mapState(["Module", "Template", "TemplateCategory", "Auth", "Setting", "Grade", "LessonPlanFormat"]),
+        ...mapState(["ModuleForEdit", "Template", "TemplateCategory", "Auth", "Setting", "Grade", "LessonPlanFormat"]),
         filteredTemplates: function () {
             if (this.module.template_category.id == -1) return this.Template.items;
             return this.Template.items.filter(item => {
@@ -106,12 +106,12 @@ export default {
     },
     created: function () {
         this.template_categories_options = [...this.template_categories_options, ...this.TemplateCategory.items]
-        if (this.Module.build.template_category) {
-            this.module.template_category = this.Module.build.template_category
+        if (this.ModuleForEdit.build.template_category) {
+            this.module.template_category = this.ModuleForEdit.build.template_category
         } else this.module.template_category = this.template_categories_options[0]
 
-        if (this.Module.build.owned_template_category) {
-            this.module.owned_template_category = this.Module.build.owned_template_category
+        if (this.ModuleForEdit.build.owned_template_category) {
+            this.module.owned_template_category = this.ModuleForEdit.build.owned_template_category
         } else this.module.owned_template_category = this.template_categories_options[0]
     },
     mounted() {
@@ -147,10 +147,10 @@ export default {
     methods: {
         selectTemplate: function (template) {
             //return;
-            this.$store.commit('Module/setSelectedTemplate', {
-                selected_template: template
+            this.$store.commit('ModuleForEdit/setTemplate', {
+                template: template
             });
-            console.log(this.Module.build.selected_template)
+            //console.log(this.Module.build.selected_template)
             // this.$router.push({
             //     name: 'create'
             // })

@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-10 text-center text-caption q-mt-xs">
                 {{item.name}}
-                <q-icon v-show="this.Module.build.selected_template? (this.Module.build.selected_template.id==item.id?true:false) :false" color="green" name="check_circle_outline"></q-icon>
+                <q-icon v-show="this.ModuleForEdit.build.template? (this.ModuleForEdit.build.template.id==item.id?true:false) :false" color="green" name="check_circle_outline"></q-icon>
 
             </div>
             <div class="col">
@@ -53,7 +53,7 @@ export default {
         item: null,
     },
     computed: {
-        ...mapState(["Setting", "Module"])
+        ...mapState(["Setting", "ModuleForEdit"])
     }
 }
 </script>

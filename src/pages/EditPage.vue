@@ -2,9 +2,9 @@
 <div>
     <q-header>
         <q-toolbar style="background-color:#840000">
-            <q-btn flat dense icon="arrow_back" style="font-size:18px" @click="$router.push('/')" />
+            <q-btn flat dense icon="arrow_back" style="font-size:18px" @click="$router.push({name:'profil'})" />
             <q-toolbar-title>
-                <div class="text-body2 text-weight-light" style="font-size:15px">Buat Modul</div>
+                <div class="text-body2 text-weight-light" style="font-size:15px">Edit Draft Modul</div>
             </q-toolbar-title>
         </q-toolbar>
     </q-header>
@@ -14,7 +14,7 @@
                 <div class="row">
                     <div class="col-8 text-weight-medium q-gutters-none q-pa-sm">
                         <q-item-label>Sampul Buku Modul</q-item-label>
-                        <q-btn class="q-my-xs" style="background-color:#840000" flat color="white" no-caps @click="$router.push('/create/cover')" label="Pilih Sampul">
+                        <q-btn class="q-my-xs" style="background-color:#840000" flat color="white" no-caps @click="$router.push('/editcover')" label="Pilih Sampul">
                             <span class="material-icons" style="font-size:16px">
                                 chevron_right
                             </span>
@@ -29,7 +29,7 @@
                         <div class="vertical-middle">
                             <q-img :src="selectedTemplate" style="max-width:100%;max-height:100%;">
                             </q-img>
-                            <div class="text-caption">{{module.selected_template?module.selected_template.name:null}}</div>
+                            <div class="text-caption">{{module.template?module.template.name:null}}</div>
                         </div>
                     </div>
                 </div>
@@ -49,7 +49,7 @@
                     </q-card-section>
                     <q-card-section style="">
                         <ol class="text-weight-bold" style="padding-left:20px; margin:0px">
-                            <div v-for="(content,n) in module.contents" :key="n">
+                            <div v-for="(content,n) in module.module_contents" :key="n">
                                 <li>
                                     <q-item style="border-top: 1px solid grey">
                                         <q-item-section>
@@ -64,7 +64,7 @@
                                             </span>
                                         </q-item-section>
                                         <q-item-section side class="q-px-xs">
-                                            <span class="material-icons" color="blue-grey-13" style="font-size:20px" @click="$router.push({name:'modulecontentedit',params:{moduleContentIndex:n,contentName:content.name}})">
+                                            <span class="material-icons" color="blue-grey-13" style="font-size:20px" @click="$router.push({name:'modulecontenteditforedit',params:{moduleContentIndex:n,contentName:content.name, moduleId:moduleId}})">
                                                 edit
                                             </span>
                                             <!--<q-popup-edit v-model="content.value" persistent title="Isi Bab" label-set="Selesai" label-cancel="Tutup" self="top left" buttons max-width="" min-height="200rem" fit>
@@ -87,6 +87,20 @@
                 </q-item>
             </q-form>
         </div>
+        <q-dialog v-model="confirm" persistent>
+            <q-card>
+                <q-card-section class="row items-center">
+                    <span class="text-h6">Ada draft modul yang belum disimpan</span>
+
+                    <span class="q-ml-sm">Abaikan draft sebelumnya dan mulai mengedit draft modul ini?</span>
+                </q-card-section>
+
+                <q-card-actions align="right">
+                    <q-btn flat no-caps @click="goToPreviousDraft()" label="Edit draft sebelumnya" color="negative" v-close-popup />
+                    <q-btn no-caps label="Abaikan" @click="ignorePreviousDraft()" color="negative" v-close-popup />
+                </q-card-actions>
+            </q-card>
+        </q-dialog>
     </q-page>
 </div>
 </template>
@@ -100,8 +114,12 @@ import {
 } from 'quasar'
 // import CreateMessage from "components/CreateModul/EditModul";
 export default {
+    props: {
+        moduleId: null
+    },
     data() {
         return {
+            confirm: false,
             loading: false,
             file: null,
             model: null,
@@ -112,53 +130,80 @@ export default {
                 grade: null,
                 subject: null,
                 description: null,
-                contents: [],
-                selected_template: null,
+                module_contents: [],
+                template: null,
             },
         }
     },
     computed: {
-        ...mapState(["Auth", "Setting", "Grade", "Module"]),
+        ...mapState(["Auth", "Setting", "Grade", "ModuleForEdit"]),
         selectedTemplate: function () {
-            if (this.Module.build.selected_template) return `${this.Setting.storageUrl}/${this.Module.build.selected_template.image}`;
+            if (this.module.template) return `${this.Setting.storageUrl}/${this.module.template.image}`;
             else return "cover-template.png";
         }
     },
     mounted() {
+        console.log(this.ModuleForEdit.build)
         if (!this.Grade.items.length) this.$store.dispatch("Grade/index");
 
     },
     created: function () {
-        this.module = {
-            ...this.Module.build,
-            //contents: [...this.Module.build.contents]
-            contents: [...this.Module.build.contents.map(content => {
-                return {
-                    ...content
+        /*
+        moduleId = ID modul yang dipilih, yg ada di url. contoh: /edit/1111)
+        ModuleForEdit.build.module_id = ID modul yang telah dipilih sebelumnya
+        */
+        if (this.moduleId) {
+            if (!this.ModuleForEdit.build.module_id) {
+                //jika modul belum ada, maka fetch data dari API dan masukkan ke vuex Store
+                this.getModuleData(this.moduleId);
+
+            } else {
+                //jika ID modul yang dipilih tidak sama dengan ID modul yg ada sebelumnya, tampilkan konfirmasi apakah mau lanjut mengedit draft sebelumnya atau abaikan
+                if (this.moduleId != this.ModuleForEdit.build.module_id) {
+                    this.confirm = true;
+                } else {
+                    //jika ID modul yg dipilih sama, maka clone data dari store Module ke data local
+                    this.cloneModuleFromStore();
                 }
-            })]
+
+            }
+
         }
-        console.log(this.module)
-        if (this.module.contents.length == 0) this.module.contents.push({
-            name: 'Judul bab',
-            value: 'Isi bab'
-        })
+        // this.module = {
+        //     ...this.Module.build,
+        //     //contents: [...this.Module.build.contents]
+        //     contents: [...this.Module.build.contents.map(content => {
+        //         return {
+        //             ...content
+        //         }
+        //     })]
+        // }
+        // console.log(this.module)
+        // if (this.module.contents.length == 0) this.module.contents.push({
+        //     name: 'Judul bab',
+        //     value: 'Isi bab'
+        // })
     },
     watch: {
+        'module.template': function (newVal, oldVal) {
+            this.$store.commit("ModuleForEdit/setTemplate", {
+                template: newVal
+            });
+        },
         'module.description': debounce(function (newVal, oldVal) {
-            this.$store.commit("Module/setDescription", {
+            this.$store.commit("ModuleForEdit/setDescription", {
                 description: newVal
             });
 
         }, 500),
         'module.grade': function (newVal, oldVal) {
-            this.$store.commit("Module/setGrade", {
+            this.$store.commit("ModuleForEdit/setGrade", {
                 grade: newVal
             });
         },
-        'module.contents': {
+        'module.module_contents': {
             handler: function (newVal, oldVal) {
-                this.$store.commit("Module/setContents", {
+                this.$store.commit("ModuleForEdit/setContents", {
                     contents: newVal
                 });
                 console.log('cok')
@@ -167,12 +212,64 @@ export default {
             deep: true
         },
         'module.subject': function (newVal, oldVal) {
-            this.$store.commit("Module/setSubject", {
+            this.$store.commit("ModuleForEdit/setSubject", {
                 subject: newVal
             });
         },
     },
     methods: {
+        cloneModuleFromStore() {
+            this.module = {
+                ...this.ModuleForEdit.build,
+                //contents: [...this.Module.build.contents]
+                module_contents: [...this.ModuleForEdit.build.module_contents.map(content => {
+                    return {
+                        ...content
+                    }
+                })]
+            }
+        },
+        getModuleData(moduleId) {
+            this.$store.dispatch('Module/show', {
+                module_id: moduleId
+            }).then(res => {
+                /*
+                Set ID modul pada store Module ke ID yang dipilih saat ini
+                */
+                this.$store.commit('ModuleForEdit/setModuleId', {
+                    module_id: moduleId
+                })
+                this.module = {
+                    ...res.data,
+                    template: {
+                        ...res.data.template
+                    },
+                    module_contents: [
+                        ...res.data.module_contents.map(item => {
+                            return {
+                                ...item
+                            }
+                        })
+                    ],
+                    grade: {
+                        ...res.data.grade
+                    }
+                }
+            }).catch(err => {
+                //alert(err)
+                this.$q.notify('Data tidak ditemukan');
+                this.$router.back();
+            })
+        },
+        ignorePreviousDraft() {
+            //fetch data API beradasarkan ID modul yang dipilih sekarang
+            this.getModuleData(this.moduleId)
+        },
+        goToPreviousDraft() {
+            //clone data modul dari store Module sebelumnya
+            //this.getModuleData(this.ModuleForEdit.build.module_id)
+            this.cloneModuleFromStore();
+        },
         submitModule(is_publish) {
             this.$refs.myForm.validate().then(success => {
                 if (success) {
@@ -186,15 +283,15 @@ export default {
                         this.loading = true;
                         this.module.is_publish = is_publish
 
-                        this.$store.dispatch("Module/store", this.module).then(res => {
-                            this.$store.commit('Module/resetBuild');
+                        this.$store.dispatch("ModuleForEdit/store", this.module).then(res => {
+                            this.$store.commit('ModuleForEdit/resetBuild');
                             this.$q.notify(is_publish ? 'Berhasil menerbitkan modul' : 'Berhasil menyimpan modul')
-                            this.$store.dispatch("Module/getPublishedModules");
+                            if (is_publish) this.$store.dispatch("Module/getPublishedModules");
                             this.$router.push('/');
                         }).catch(err => {
                             console.log(err.response);
                             //return;
-                            if (err.response.data.errors.selected_template) {
+                            if (err.response.data.errors.template) {
                                 this.$q.notify('Sampul modul harus dipilih');
                             }
                         }).finally(() => {
@@ -212,7 +309,7 @@ export default {
 
         },
         addContent() {
-            this.module.contents.push({
+            this.module.module_contents.push({
                 name: 'Judul bab',
                 value: 'Isi bab'
             })
@@ -225,7 +322,7 @@ export default {
                 cancel: true,
                 persistent: true
             }).onOk(() => {
-                this.module.contents.splice(index, 1);
+                this.module.module_contents.splice(index, 1);
             }).onOk(() => {
                 // console.log('>>>> second OK catcher')
             }).onCancel(() => {

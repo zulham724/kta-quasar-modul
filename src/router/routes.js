@@ -1,16 +1,36 @@
 
 const routes = [
   {
-    path: '',
+    path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-          { path: '/', 
+          { path: '', 
             component: () => import('pages/HomePage.vue') 
           },
           {
             path: "/create",
             name: "create",
             component: () => import("pages/CreatePage.vue")
+          },
+          {
+            path: "/edit/:moduleId",
+            name: "edit",
+            component: () => import("pages/EditPage.vue"),
+            props:true,
+          },
+          {
+            path: "/modulecontent/edit",
+            name: "modulecontentedit",
+            component: () => import("pages/Module/EditContent.vue"),
+            props:true
+
+          },
+          {
+            path: "/modulecontentforedit/edit",
+            name: "modulecontenteditforedit",
+            component: () => import("pages/ModuleForEdit/EditContent.vue"),
+            props:true
+
           },
           {
             path: "/category/newest",
@@ -77,6 +97,12 @@ const routes = [
             name: "cover",
             component: () =>
                 import ("pages/Cover/CoverPage.vue")
+          },
+          {
+            path: "/editcover",
+            name: "editcover",
+            component: () =>
+                import ("pages/Cover/CoverEditPage.vue")
           },
           {
             path: "/create/cover/new",

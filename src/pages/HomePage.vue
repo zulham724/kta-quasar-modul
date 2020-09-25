@@ -23,10 +23,10 @@
         <q-item style="padding:0px">
             <q-scroll-area horizontal style="height: 270px; width: 100%;" class="bg-grey-1 rounded-borders">
                 <div class="row no-wrap">
-                    <div v-for="n in 4" :key="n" style="width: 150px" class="q-pa-sm">
-                        <q-img src="~assets/contoh-modul.png"></q-img>
-                        <!-- <modul></modul> -->
-                    </div>
+                    <q-intersection v-for="(item,n) in latestModules" :key="n" style="min-width: 150px" class="q-pa-sm">
+                        <!--<q-img src="~assets/contoh-modul.png"></q-img>-->
+                        <modul></modul>
+                    </q-intersection>
                 </div>
             </q-scroll-area>
         </q-item>
@@ -103,9 +103,24 @@
 </template>
 
 <script>
+import {
+    mapState
+} from "vuex";
 export default {
     components: {
         Modul: () => import("components/Modul.vue")
+    },
+    created: function () {
+        if (!this.Module.latest_modules) {
+            this.$store.dispatch("Module/getLatestModules");
+        }
+    },
+    computed: {
+        ...mapState(["Setting", "Module"]),
+        latestModules() {
+            if (this.Module.latest_modules) return this.Module.latest_modules;
+            else return [];
+        }
     }
 
 }

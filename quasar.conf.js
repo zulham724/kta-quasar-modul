@@ -78,7 +78,8 @@ module.exports = function (/* ctx */) {
       iconSet: 'material-icons', // Quasar icon set
       lang: 'en-us', // Quasar language pack
       config: {
-        notify: { /* look at QUASARCONFOPTIONS from the API card (bottom of page) */ }
+        notify: { /* look at QUASARCONFOPTIONS from the API card (bottom of page) */ },
+        ripple: { /* look at QUASARCONFOPTIONS from the API card (bottom of page) */ }
       },
 
       // Possible values for "importStrategy":

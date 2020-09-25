@@ -1,32 +1,35 @@
 import axios from 'axios'
 
 const state = {
+   
     build: {
+        module_id:null,
         is_publish: true,
         grade: null,
         description:null,
-        contents:[],
-        selected_template:null,
+        module_contents:[],
+        template:null,
         template_category:null,
         owned_template_category:null,
         subject:null,
     },
-    modules_count:null,
-    likes_count:null,
-    liked_count:null,
-    published_modules:{},
-    unpublished_modules:{},
-    latest_modules:null
+    // modules_count:null,
+    // likes_count:null,
+    // liked_count:null,
+    // published_modules:{},
+    // unpublished_modules:{},
+    // latest_modules:null
 };
 
 const mutations = {
     resetBuild(state){
         state.build =  {
+            module_id:null,
             is_publish: true,
             grade: null,
             description:null,
-            contents:[],
-            selected_template:null,
+            module_contents:[],
+            template:null,
             template_category:null,
             owned_template_category:null,
             subject:null,
@@ -45,7 +48,7 @@ const mutations = {
         state.build.description = payload.description;
     },
     setContents(state, payload){
-        state.build.contents = [...payload.contents.map(content=>{
+        state.build.module_contents = [...payload.contents.map(content=>{
             return {...content}
         })]
     },
@@ -55,14 +58,14 @@ const mutations = {
     setOwnedTemplateCategory(state, payload){
         state.build.owned_template_category = {...payload.owned_template_category}
     },
-    setSelectedTemplate(state, payload){
-        state.build.selected_template = payload.selected_template
+    setTemplate(state, payload){
+        state.build.template = payload.template
     },
     setSubject(state, payload){
         state.build.subject = payload.subject
     },
     setModuleContent(state, payload){
-       state.build.contents[payload.index].value=payload.value;
+       state.build.module_contents[payload.index].value=payload.value;
     },
     setModulesCount(state, payload){
         state.modules_count=payload.modules_count;
@@ -87,6 +90,9 @@ const mutations = {
         state.latest_modules = [...payload.latest_modules.map(item=>{
             return {...item}
         })]
+    },
+    setModuleId(state, payload){
+        state.build.module_id=payload.module_id;
     }
 };
 
@@ -121,11 +127,12 @@ const actions = {
                 });
         });
     },
-    store({commit}, payload){
+    store({state}, payload){
         return new Promise((resolve, reject) => {
+            payload._method="PUT";
             axios
                 .post(
-                    `${this.state.Setting.url}/api/v1/module`, payload
+                    `${this.state.Setting.url}/api/v1/module/${state.build.module_id}`, payload
                 )
                 .then(res => {
                     //commit("set", { items: res.data.grades });
@@ -137,102 +144,6 @@ const actions = {
                 });
         });
     },
-    getModulesCount({commit}){
-        return new Promise((resolve, reject) => {
-            axios
-                .get(
-                    `${this.state.Setting.url}/api/v1/modules/getmodulescount`
-                )
-                .then(res => {
-                    commit("setModulesCount", { modules_count: res.data });
-                    resolve(res);
-                })
-                .catch(err => {
-                    reject(err);
-                    
-                });
-        });
-    },
-    getLikedCount({commit}){
-        return new Promise((resolve, reject) => {
-            axios
-                .get(
-                    `${this.state.Setting.url}/api/v1/modules/getlikedcount`
-                )
-                .then(res => {
-                    commit("setLikedCount", { liked_count: res.data });
-                    resolve(res);
-                })
-                .catch(err => {
-                    reject(err);
-                    
-                });
-        });
-    },
-    getLikesCount({commit}){
-        return new Promise((resolve, reject) => {
-            axios
-                .get(
-                    `${this.state.Setting.url}/api/v1/modules/getlikescount`
-                )
-                .then(res => {
-                    commit("setLikesCount", { likes_count: res.data });
-                    resolve(res);
-                })
-                .catch(err => {
-                    reject(err);
-                    
-                });
-        });
-    },
-    getPublishedModules({commit}){
-        return new Promise((resolve, reject) => {
-            axios
-                .get(
-                    `${this.state.Setting.url}/api/v1/modules/getpublish`
-                )
-                .then(res => {
-                    commit("setPublishedModules", { published_modules: res.data });
-                    resolve(res);
-                })
-                .catch(err => {
-                    reject(err);
-                    
-                });
-        });
-    },
-    getUnpublishedModules({commit}){
-        return new Promise((resolve, reject) => {
-            axios
-                .get(
-                    `${this.state.Setting.url}/api/v1/modules/getunpublish`
-                )
-                .then(res => {
-                    commit("setUnpublishedModules", { unpublished_modules: res.data });
-                    resolve(res);
-                })
-                .catch(err => {
-                    reject(err);
-                    
-                });
-        });
-    },
-    getLatestModules({commit}){
-        return new Promise((resolve, reject) => {
-            axios
-                .get(
-                    `${this.state.Setting.url}/api/v1/modules/getalllatest`
-                )
-                .then(res => {
-                    commit("setLatestModules", { latest_modules: res.data });
-                    resolve(res);
-                })
-                .catch(err => {
-                    reject(err);
-                    
-                });
-        });
-    }
 };
 
 const getters = {};
