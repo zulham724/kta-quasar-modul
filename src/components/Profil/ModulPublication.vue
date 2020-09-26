@@ -4,7 +4,7 @@
       border-radius:10px">
         <q-item-section avatar top style="padding-right:10px" clickable @click="$router.push('/modul')">
             <q-avatar square size="25vw">
-                <img src="~assets/modul.png" style="width:80%; transform: scale(1,1)" />
+                <img :src="`${Setting.storageUrl}/${module.template.image}`" style="width:80%; transform: scale(1,1)" />
             </q-avatar>
         </q-item-section>
         <q-item-section top>
@@ -38,9 +38,16 @@
 </template>
 
 <script>
+import {
+    mapState
+} from "vuex";
 export default {
     props: {
         module: null
+    },
+    computed: {
+        ...mapState(["Setting"]),
+
     },
     data() {
         return {

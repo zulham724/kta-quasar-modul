@@ -1,8 +1,23 @@
+import multiguard from "vue-router-multiguard";
+import store from "./../store";
+//import moment from "moment";
+//import { Notify } from "quasar";
+
+// cek auth apakah sudah login atau belum
+const auth = function(to, from, next) {
+  let isLoggedIn = store().getters["Auth/isLoggedIn"];
+  if (isLoggedIn) {
+      next();
+  } else {
+      next("/login");
+  }
+};
 
 const routes = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
+    beforeEnter: multiguard([auth]),
     children: [
           { path: '', 
             component: () => import('pages/HomePage.vue') 
@@ -73,9 +88,11 @@ const routes = [
                 import ("pages/SLBPage.vue")   
           },    
           {
-            path: "/modul",
+            path: "/modul/:moduleId",
             name: "modul",
-            component: () => import("pages/ModulPage.vue")
+            component: () => import("pages/ModulPage.vue"),
+            props:true
+
           },
           {
             path: "/profil",

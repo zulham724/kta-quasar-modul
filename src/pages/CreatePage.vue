@@ -19,9 +19,13 @@
                                 chevron_right
                             </span>
                         </q-btn>
+                        <div class="q-pt-xs">Judul</div>
+                        <q-input :rules="[val => !!val || 'Harus diisi']" label="Judul modul" v-model="module.name" dense color="red-10"></q-input>
+
                         <div class="q-pt-xs">Kelas</div>
                         <q-select :disable="Grade.items.length==0" dense label="Kelas" color="deep-purple" v-model="module.grade" :options="Grade.items" option-value="id" option-label="description" :rules="[val => !!val || 'Harus diisi']">
                         </q-select>
+
                         <div class="q-pt-xs">Mata Pelajaran</div>
                         <q-input v-model="module.subject" dense color="red-10"></q-input>
                     </div>
@@ -169,6 +173,11 @@ export default {
         'module.subject': function (newVal, oldVal) {
             this.$store.commit("Module/setSubject", {
                 subject: newVal
+            });
+        },
+        'module.name': function (newVal, oldVal) {
+            this.$store.commit("Module/setName", {
+                name: newVal
             });
         },
     },

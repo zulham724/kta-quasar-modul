@@ -4,6 +4,7 @@ const state = {
     build: {
         is_publish: true,
         grade: null,
+        name:null,
         description:null,
         contents:[],
         selected_template:null,
@@ -24,6 +25,7 @@ const mutations = {
         state.build =  {
             is_publish: true,
             grade: null,
+            name:null,
             description:null,
             contents:[],
             selected_template:null,
@@ -57,6 +59,9 @@ const mutations = {
     },
     setSelectedTemplate(state, payload){
         state.build.selected_template = payload.selected_template
+    },
+    setName(state, payload){
+        state.build.name = payload.name
     },
     setSubject(state, payload){
         state.build.subject = payload.subject
@@ -129,6 +134,22 @@ const actions = {
                 )
                 .then(res => {
                     //commit("set", { items: res.data.grades });
+                    resolve(res);
+                })
+                .catch(err => {
+                    reject(err);
+                    
+                });
+        });
+    },
+    getModulesByEducationalLevel(){
+        return new Promise((resolve, reject) => {
+            axios
+                .get(
+                    `${this.state.Setting.url}/api/v1/modules/getmodulescount`
+                )
+                .then(res => {
+                    commit("setModulesCount", { modules_count: res.data });
                     resolve(res);
                 })
                 .catch(err => {

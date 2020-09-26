@@ -25,7 +25,7 @@
                 <div class="row no-wrap">
                     <q-intersection v-for="(item,n) in latestModules" :key="n" style="min-width: 150px" class="q-pa-sm">
                         <!--<q-img src="~assets/contoh-modul.png"></q-img>-->
-                        <modul></modul>
+                        <modul :module="item"></modul>
                     </q-intersection>
                 </div>
             </q-scroll-area>

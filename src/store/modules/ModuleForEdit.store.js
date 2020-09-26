@@ -6,6 +6,7 @@ const state = {
         module_id:null,
         is_publish: true,
         grade: null,
+        name:null,
         description:null,
         module_contents:[],
         template:null,
@@ -27,6 +28,7 @@ const mutations = {
             module_id:null,
             is_publish: true,
             grade: null,
+            name:null,
             description:null,
             module_contents:[],
             template:null,
@@ -40,6 +42,9 @@ const mutations = {
     },
     setBuild(state, payload){
         state = {...payload.build}
+    },
+    setName(state, payload){
+        state.build.name=payload.name
     },
     setGrade(state, payload){
         state.build.grade={...payload.grade}

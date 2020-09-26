@@ -19,6 +19,9 @@
                                 chevron_right
                             </span>
                         </q-btn>
+                        <div class="q-pt-xs">Judul</div>
+                        <q-input :rules="[val => !!val || 'Harus diisi']" label="Judul modul" v-model="module.name" dense color="red-10"></q-input>
+
                         <div class="q-pt-xs">Kelas</div>
                         <q-select :disable="Grade.items.length==0" dense label="Kelas" color="deep-purple" v-model="module.grade" :options="Grade.items" option-value="id" option-label="description" :rules="[val => !!val || 'Harus diisi']">
                         </q-select>
@@ -216,6 +219,12 @@ export default {
                 subject: newVal
             });
         },
+        'module.name': function (newVal, oldVal) {
+            this.$store.commit("ModuleForEdit/setName", {
+                name: newVal
+            });
+        }
+
     },
     methods: {
         cloneModuleFromStore() {

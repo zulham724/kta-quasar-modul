@@ -18,6 +18,7 @@
     "vue-email-editor": "^0.7.2",
     "vue-froala-wysiwyg": "^3.2.0",
     "vue-moment": "^4.1.0",
+    "vue-router-multiguard": "^1.0.3",
     "vue-virtual-scroller": "^1.0.10",
     "vuex-persist": "^2.2.0"
   },
