@@ -100,12 +100,13 @@ const routes = [
             component: () => import("pages/ProfilPage.vue")
           },
           {
-            path: "/modul/comment",
+            path: "/modulecomments/:moduleId",
             name: "comment",
-            component: () => import("pages/CommentModulPage.vue")
+            component: () => import("pages/CommentModulPage.vue"),
+            props:true
           },
           {
-            path: "/modul/review",
+            path: "/modulereview",
             name: "review",
             component: () => import("pages/ReviewModulPage.vue")
           },

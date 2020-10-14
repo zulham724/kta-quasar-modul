@@ -51,7 +51,7 @@
             </div>
             <div class="q-pt-lg q-pb-none text-center">
                 <div class="q-px-md text-weight-regular" style="color:white;font-size:18px">
-                    {{module.subject}}
+                    {{module.name}}
                 </div>
             </div>
             <div class="text-center q-py-none " style="color:#F2C94C;font-size:16px">
@@ -78,7 +78,7 @@
                         <div class="text-center q-pa-sm" style="height:55px;width:55px;
                 background-color:white;
                 border-radius:50px;
-                transform:translate(0%,-60%)" clickable @click="$router.push('/modul/comment')">
+                transform:translate(0%,-60%)" clickable @click="$router.push('/modulecomments/'+moduleId)">
                             <span class="material-icons" style="font-size:24px">
                                 comment
                             </span>
@@ -248,7 +248,10 @@ export default {
             if (this.model) {
                 const module_content = this.module.module_contents.find(e => e.id == this.model.id)
                 if (module_content) return module_content
-            } else return null;
+            } else {
+                //console.log(this.model)
+                return null;
+            }
         },
     },
     created: function () {
