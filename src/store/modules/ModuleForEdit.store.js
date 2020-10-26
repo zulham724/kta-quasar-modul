@@ -64,7 +64,8 @@ const mutations = {
         state.build.owned_template_category = {...payload.owned_template_category}
     },
     setTemplate(state, payload){
-        state.build.template = payload.template
+        state.build.template = payload.template;
+        state.build.template.canvas_data = {}
     },
     setSubject(state, payload){
         state.build.subject = payload.subject

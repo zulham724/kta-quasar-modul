@@ -2,7 +2,7 @@
 <div>
     <q-page-container class="q-pa-lg relative-position" style="padding-bottom:0px">
         <div class="text-h5 q-pt-sm" style="color:#CC3636;">PAI</div>
-        <div class="text-h4 text-weight-medium" style="color:#8C2121;">Modul</div>
+        <div class="text-h4 text-weight-medium" style="color:#8C2121;">Modul Digital</div>
         <div style="width:75%; height:50%">
             <q-input outlined dense rounded color="red-10" class="q-pt-md" style="height:50%" label="Cari Modul">
                 <template v-slot:append>
@@ -21,9 +21,9 @@
             </q-item-section>
         </q-item>
         <q-item style="padding:0px">
-            <q-scroll-area horizontal style="height: 270px; width: 100%;" class="bg-grey-1 rounded-borders">
+            <q-scroll-area horizontal style="height:150px;width: 100%;" class="bg-grey-1 rounded-borders">
                 <div class="row no-wrap">
-                    <q-intersection v-for="(item,n) in latestModules" :key="n" style="min-width: 150px" class="q-pa-sm">
+                    <q-intersection v-for="(item,n) in latestModules" :key="n" style="min-height:100px;min-width: 150px" class="q-pa-sm">
                         <!--<q-img src="~assets/contoh-modul.png"></q-img>-->
                         <modul :module="item"></modul>
                     </q-intersection>
@@ -32,7 +32,7 @@
         </q-item>
         <q-item style="padding-left:0px; padding-right:0px">
             <q-item-section class="text-weight-medium" style="font-size:19px">
-                Kategori
+                Jenjang
             </q-item-section>
         </q-item>
         <div class="row">

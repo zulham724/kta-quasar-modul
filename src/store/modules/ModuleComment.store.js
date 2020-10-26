@@ -35,17 +35,44 @@ const mutations = {
             }
             
         }
+    },
+    addComments(state,payload){
+        const index=state.items.findIndex(e=>e.module.id==payload.module.id);
+        if(index>-1){
+            const previousComment=state.items[index].comments.data;
+            state.items[index].comments=payload.comments;
+            state.items[index].comments.data=[...previousComment,...payload.comments.data]
+            payload.comments.data.forEach(comment=>{
+                const comment_index=state.items[index].comments.data.findIndex(e=>e.id==comment.id);
+                if(comment_index==-1){
+                   state.items[index].comments.data.push(comment);
+                }
+            });
+           
+            
+        }
     }
 };
 
 // Actions
 const actions = {
+    next({commit, state}, payload){
+        return new Promise((resolve, reject)=>{
+            axios.get(payload.next_page_url).then(res=>{
+                commit("addComments",res.data);
+                resolve();
+            });
+            //resolve();
+        });
+        
+    },
     show({commit}, payload){
         return new Promise((resolve, reject) => {
             axios
                 .get(`${this.state.Setting.url}/api/v1/modules/${payload.module_id}/comments`)
                 .then(res => {
                     commit("set",res.data)
+                    resolve();
                 })
                 .catch(err => {
                     reject(err);

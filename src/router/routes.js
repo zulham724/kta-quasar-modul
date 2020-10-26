@@ -23,6 +23,11 @@ const routes = [
             component: () => import('pages/HomePage.vue') 
           },
           {
+            path: "/editcoverdesign",
+            name: "editcoverdesign",
+            component: () => import("pages/EditCoverDesign.vue")
+          },
+          {
             path: "/create",
             name: "create",
             component: () => import("pages/CreatePage.vue")
@@ -130,6 +135,14 @@ const routes = [
           },            
     ]
   },
+  
+  // {
+  //   path: "/user/search",
+  //   beforeEnter: multiguard([auth, actived, check_teacher_status]),
+  //   name: "usersearch",
+  //   component: () =>
+  //       import ("pages/module/SearchPage.vue")
+  // },
   {
     path: "/login",
     name: "login",
@@ -148,7 +161,7 @@ const routes = [
   {
     path: '*',
     component: () => import('pages/Error404.vue')
-  }
+  },
 ]
 
 export default routes

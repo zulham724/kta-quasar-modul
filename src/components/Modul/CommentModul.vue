@@ -51,7 +51,7 @@ export default {
     },
     data() {
         return {
-            text: "Wah modul nya sangat bagus. Isinya menarik dan mudah dipahami"
+            loading: false,
         }
     },
     methods: {

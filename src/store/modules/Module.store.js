@@ -4,7 +4,7 @@ const state = {
     build: {
         is_publish: true,
         grade: null,
-        name:null,
+        name:'',
         description:null,
         contents:[],
         selected_template:null,
@@ -12,6 +12,7 @@ const state = {
         owned_template_category:null,
         subject:null,
     },
+    owned:{},
     modules_count:null,
     likes_count:null,
     liked_count:null,
@@ -25,11 +26,11 @@ const mutations = {
         state.build =  {
             is_publish: true,
             grade: null,
-            name:null,
+            name:'',
             description:null,
             contents:[],
             selected_template:null,
-            template_category:null,
+            template_category:'',
             owned_template_category:null,
             subject:null,
         }
@@ -59,6 +60,8 @@ const mutations = {
     },
     setSelectedTemplate(state, payload){
         state.build.selected_template = payload.selected_template
+        console.log('asu');
+        state.build.selected_template.canvas_data = {}
     },
     setName(state, payload){
         state.build.name = payload.name
@@ -251,6 +254,36 @@ const actions = {
                 .catch(err => {
                     reject(err);
                     
+                });
+        });
+    },
+    like({commit}, payload){
+        return new Promise((resolve, reject) => {
+            const access = {
+                module_id: payload.module_id
+            };
+            axios
+                .post(`${this.state.Setting.url}/api/v1/modules/${access.module_id}/likes`)
+                .then(res => {
+                    resolve(res);
+                })
+                .catch(err => {
+                    reject(err);
+                });
+        });
+    },
+    dislike({commit}, payload){
+        return new Promise((resolve, reject) => {
+            const access = {
+                module_id: payload.module_id
+            };
+            axios
+                .delete(`${this.state.Setting.url}/api/v1/module/${access.module_id}/dislike`)
+                .then(res => {
+                    resolve(res);
+                })
+                .catch(err => {
+                    reject(err);
                 });
         });
     }

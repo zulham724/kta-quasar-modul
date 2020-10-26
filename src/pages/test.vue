@@ -1,39 +1,42 @@
 <template>
 <div>
-    <input type="file" @change="previewImage" accept="image/*">
-    <div class="image-preview" v-if="imageData.length > 0">
-        <img class="preview" :src="imageData">
-    </div>
+    <sampul-maker :img="img" :items="items">
+        <template v-slot:color="{item}">
+            <q-color v-model="item.color" class="my-picker" />
+        </template>
+        <template v-slot:size="{item}">
+            <q-slider label v-model="item.size" :min="1" :max="10" />
+        </template>
+    </sampul-maker>
 </div>
 </template>
 
 <script>
+import SampulMaker from 'components/SampulMaker/SampulMaker.vue';
+
 export default {
+    components: {
+        'SampulMaker': SampulMaker
+    },
     data() {
         return {
-            model: null,
-            imageData: ""
+            img: 'https://s3.us-west-1.wasabisys.com/agpaiidigital.org/templates/October2020/K3yezCjuoGB9uyYX8UqB.png',
+            items: [{
+                    text: 'Rieqy Muwachid Erysya',
+                    color: '#00ff00',
+                    size: 5,
+                    y: 100, //posisi awal y
+                },
+                {
+                    text: 'Mata Pelajaran Agama Islam dan asda sdsa sd',
+                    color: '#00f0ff',
+                    size: 10,
+                    y: 200 //posisi awal y
+                }
+            ]
         }
     },
-    methods: {
-        previewImage: function (event) {
-            // Reference to the DOM input element
-            var input = event.target;
-            // Ensure that you have a file before attempting to read it
-            if (input.files && input.files[0]) {
-                // create a new FileReader to read this image and convert to base64 format
-                var reader = new FileReader();
-                // Define a callback function to run, when FileReader finishes its job
-                reader.onload = (e) => {
-                    // Note: arrow function used here, so that "this.imageData" refers to the imageData of Vue component
-                    // Read image as base64 and set to imageData
-                    this.imageData = e.target.result;
-                }
-                // Start the reader job - read file as a data url (base64 format)
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-    }
+
 }
 </script>
 

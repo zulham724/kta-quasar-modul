@@ -2,7 +2,7 @@
 <div>
     <q-item class="q-pa-sm" style="background-color:white;
       border-radius:10px">
-        <q-item-section avatar top style="padding-right:10px" clickable @click="$router.push('/modul')">
+        <q-item-section avatar top style="padding-right:10px" clickable @click="$router.push('/modul/'+module.id)">
             <q-avatar square size="25vw">
                 <img :src="`${Setting.storageUrl}/${module.template.image}`" style="width:80%; transform: scale(1,1)" />
             </q-avatar>
@@ -23,7 +23,7 @@
                         {{module.likes_count}} Suka
                     </div>
                     <div class="col-6">
-                        <div clickable @click="$router.push('/modul/comment')">
+                        <div clickable @click="$router.push('/modulecomments/'+module.id)">
                             <span class="material-icons" style="font-size:20px">
                                 comment
                             </span>

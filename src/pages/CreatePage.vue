@@ -30,7 +30,7 @@
                         <q-input v-model="module.subject" dense color="red-10"></q-input>
                     </div>
                     <div class="col-4 q-pa-sm text-center" style="background-color:white">
-                        <div class="vertical-middle">
+                        <div class="vertical-middle" @click="editCover">
                             <q-img :src="selectedTemplate" style="max-width:100%;max-height:100%;">
                             </q-img>
                             <div class="text-caption">{{module.selected_template?module.selected_template.name:null}}</div>
@@ -133,6 +133,18 @@ export default {
 
     },
     created: function () {
+        //template default
+        if (!this.Module.build.selected_template) {
+            this.$store.commit("Module/setSelectedTemplate", {
+                selected_template: {
+                    image: 'templates/October2020/1XBirYr1KSgigOrMJxYC.png',
+                    name: 'frecklepattern'
+                }
+                //template default
+            });
+
+        }
+
         this.module = {
             ...this.Module.build,
             //contents: [...this.Module.build.contents]
@@ -182,6 +194,9 @@ export default {
         },
     },
     methods: {
+        editCover() {
+            this.$router.push('/editcoverdesign')
+        },
         submitModule(is_publish) {
             this.$refs.myForm.validate().then(success => {
                 if (success) {

@@ -19,7 +19,7 @@ module.exports = function (/* ctx */) {
     // https://quasar.dev/quasar-cli/boot-files
     boot: [
       
-      'axios', 'vue-froala-wysiwyg','moment','vue-virtual-scroller'
+      'easeljs','axios', 'vue-froala-wysiwyg','moment','vue-virtual-scroller'
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
