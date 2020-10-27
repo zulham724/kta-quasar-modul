@@ -1,8 +1,6 @@
 <template>
-<div>
-
-    <canvas ref="myCanvas" id="myCanvas"></canvas>
-
+<div style="width:100%">
+    <canvas id="myCanvas" style="width:100%"></canvas>
     <div v-for="(item, n) in items" :key="n">
         <div class="row" v-if="selectedContainer && selectedContainer.index==n">
             <div class="col-4">
@@ -13,11 +11,8 @@
                 <slot name="size" :item="item">
                 </slot>
             </div>
-
         </div>
     </div>
-</div>
-
 </div>
 </template>
 
@@ -75,7 +70,7 @@ export default {
         var img = new Image;
         bitmap = new Bitmap(img);
         img.onload = () => {
-            //bitmap.setTransform(0, 0, 1, 1);
+            bitmap.setTransform(0, 0, 1, 1);
             //stage section
             stage.addChild(bitmap);
             stage.canvas.width = bitmap.getTransformedBounds().width;
@@ -88,6 +83,7 @@ export default {
             //stage.update();
 
         }
+        img.crossOrigin = "Anonymous"
         img.src = this.img;
     },
     methods: {
@@ -192,6 +188,9 @@ export default {
             //context.fillText(line, x, y);
             return objLineArray;
         },
+        test() {
+            console.log(stage.toDataURL());
+        }
     }
 }
 </script>

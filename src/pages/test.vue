@@ -1,6 +1,6 @@
 <template>
 <div>
-    <sampul-maker :img="img" :items="items">
+    <sampul-maker :img="img" :items="items" ref="myCanvas">
         <template v-slot:color="{item}">
             <q-color v-model="item.color" class="my-picker" />
         </template>
@@ -8,6 +8,7 @@
             <q-slider label v-model="item.size" :min="1" :max="10" />
         </template>
     </sampul-maker>
+    <button @click="$refs.myCanvas.test()"></button>
 </div>
 </template>
 
