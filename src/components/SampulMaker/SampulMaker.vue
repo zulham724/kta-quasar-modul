@@ -3,11 +3,11 @@
     <canvas id="myCanvas" style="width:100%"></canvas>
     <div v-for="(item, n) in items" :key="n">
         <div class="row" v-if="selectedContainer && selectedContainer.index==n">
-            <div class="col-4">
+            <div class="col">
                 <slot name="color" :item="item">
                 </slot>
             </div>
-            <div class="col-6">
+            <div class="col">
                 <slot name="size" :item="item">
                 </slot>
             </div>
@@ -66,6 +66,8 @@ export default {
     },
     mounted() {
         stage = new Stage("myCanvas");
+        console.log(this);
+        //        createjs.Touch.enable(stage);
         //stage.mouseMoveOutside = true;
         var img = new Image;
         bitmap = new Bitmap(img);
@@ -78,8 +80,10 @@ export default {
 
             //section buat text & rect
             this.items.forEach((item, item_index) => {
-                this.createText(stage, bitmap, item, item_index)
+                item.text = item.text.toString();
+                if (item.text && item.text.trim()) this.createText(stage, bitmap, item, item_index)
             });
+
             //stage.update();
 
         }
@@ -91,6 +95,8 @@ export default {
             let fontsize1 = bitmap.getTransformedBounds().width / (10 * (10 / objText.size));
             console.log('fontsize: ' + fontsize1)
             let x_center = bitmap.getTransformedBounds().width / 2;
+            //jika ada atribut x_append, maka nilai x_center akan ditambah dengan x_append
+            if (objText.x_append) x_center += objText.x_append;
 
             var container = new Container();
             container.x = containerData.x ? containerData.x : x_center;

@@ -4,7 +4,7 @@ const state = {
     build: {
         is_publish: true,
         grade: null,
-        name:'',
+        name:null,
         description:null,
         contents:[],
         selected_template:null,

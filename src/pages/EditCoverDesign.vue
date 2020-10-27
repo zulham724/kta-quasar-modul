@@ -55,12 +55,26 @@ export default {
         }
     },
     mounted() {
-        this.img = this.selectedTemplate
+        this.img = this.selectedTemplate;
+        var d = new Date();
+
         this.items.push({
             text: this.Module.build.name,
-            color: '#00ff00',
+            color: '#000000',
             size: 5,
+            x_append: -100, //posisi x_center ditambah dgn x_append
             y: 100, //posisi awal y
+        }, {
+            text: this.Module.build.subject,
+            color: '#000000',
+            size: 5,
+            y: 200, //posisi awal y
+        }, {
+            text: d.getFullYear(),
+            color: '#000000',
+            size: 5,
+            x_append: -150,
+            y: 50, //posisi awal y
         })
     },
     created: function () {
@@ -91,6 +105,12 @@ export default {
             },
             deep: true
         },
+        items: {
+            handler: function (newVal, oldVal) {
+                console.log(newVal)
+            },
+            deep: true
+        }
 
     },
     methods: {
