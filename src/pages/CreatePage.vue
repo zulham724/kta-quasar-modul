@@ -195,7 +195,8 @@ export default {
     },
     methods: {
         editCover() {
-            this.$router.push('/editcoverdesign')
+
+            this.$router.push('/editcoverdesign');
         },
         submitModule(is_publish) {
             this.$refs.myForm.validate().then(success => {

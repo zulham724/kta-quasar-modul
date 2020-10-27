@@ -1,4 +1,4 @@
-import { Stage, Shape } from "@createjs/easeljs";
+//import { Stage, Shape } from "@createjs/easeljs";
 
 // "async" is optional;
 // more info on params: https://quasar.dev/quasar-cli/cli-documentation/boot-files#Anatomy-of-a-boot-file

@@ -11,6 +11,7 @@ const state = {
         template_category:null,
         owned_template_category:null,
         subject:null,
+        canvas_data:[]
     },
     owned:{},
     modules_count:null,
@@ -61,7 +62,7 @@ const mutations = {
     setSelectedTemplate(state, payload){
         state.build.selected_template = payload.selected_template
         console.log('asu');
-        state.build.selected_template.canvas_data = {}
+        //state.build.selected_template.canvas_data = {}
     },
     setName(state, payload){
         state.build.name = payload.name
@@ -93,6 +94,11 @@ const mutations = {
     },
     setLatestModules(state, payload){
         state.latest_modules = [...payload.latest_modules.map(item=>{
+            return {...item}
+        })]
+    },
+    setCanvasData(state, payload){
+        state.build.canvas_data = [...payload.canvas_data.map(item=>{
             return {...item}
         })]
     }

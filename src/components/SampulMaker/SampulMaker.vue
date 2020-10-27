@@ -17,14 +17,15 @@
 </template>
 
 <script>
-var stage, bitmap;
 import {
     Stage,
     Shape,
     Bitmap,
     Container,
-    Text
+    Text,
+    Touch
 } from "@createjs/easeljs";
+var stage, bitmap;
 export default {
     props: {
         items: Array,
@@ -33,7 +34,6 @@ export default {
     watch: {
         items: {
             handler: function (newVal, oldVal) {
-                //console.log(this.containers)
                 //console.log('warna ' + this.containers[0].getChildAt(1).color)
                 let previousContainerData = [];
                 let removedChildIndex = [];
@@ -49,7 +49,7 @@ export default {
                 stage.removeAllEventListeners();
                 stage.removeChildAt(...removedChildIndex)
                 this.containers = [];
-                this.items.forEach((item, item_index) => {
+                newVal.forEach((item, item_index) => {
                     this.createText(stage, bitmap, item, item_index, previousContainerData[item_index])
                 });
                 // /stage.update();
@@ -66,7 +66,7 @@ export default {
     },
     mounted() {
         stage = new Stage("myCanvas");
-        console.log(this);
+        Touch.enable(stage);
         //        createjs.Touch.enable(stage);
         //stage.mouseMoveOutside = true;
         var img = new Image;
@@ -80,8 +80,9 @@ export default {
 
             //section buat text & rect
             this.items.forEach((item, item_index) => {
-                item.text = item.text.toString();
-                if (item.text && item.text.trim()) this.createText(stage, bitmap, item, item_index)
+                if (item.text) item.text = item.text.toString();
+                else item.text = '';
+                this.createText(stage, bitmap, item, item_index)
             });
 
             //stage.update();
@@ -91,15 +92,35 @@ export default {
         img.src = this.img;
     },
     methods: {
+        resetContainers() {
+            let removedChildIndex = [];
+            for (let i = 1; i < stage.numChildren; i++) {
+                removedChildIndex.push(i)
+            }
+            stage.removeAllEventListeners();
+            stage.removeChildAt(...removedChildIndex)
+            this.containers = [];
+        },
+        initialize() {
+            this.resetContainers();
+            this.items.forEach((item, item_index) => {
+                this.createText(stage, bitmap, item, item_index)
+            });
+        },
         createText: function (stage, bitmap, objText, objTextIndex, containerData = {}) {
             let fontsize1 = bitmap.getTransformedBounds().width / (10 * (10 / objText.size));
             console.log('fontsize: ' + fontsize1)
-            let x_center = bitmap.getTransformedBounds().width / 2;
-            //jika ada atribut x_append, maka nilai x_center akan ditambah dengan x_append
-            if (objText.x_append) x_center += objText.x_append;
-
+            let x;
+            if (!objText.x) {
+                let x_center = bitmap.getTransformedBounds().width / 2;
+                //jika ada atribut x_append, maka nilai x_center akan ditambah dengan x_append
+                if (objText.x_append) x_center += objText.x_append;
+                x = x_center;
+            } else {
+                x = objText.x
+            }
             var container = new Container();
-            container.x = containerData.x ? containerData.x : x_center;
+            container.x = containerData.x ? containerData.x : x;
             container.y = containerData.y ? containerData.y : objText.y;
 
             const maxTextWidth = bitmap.getTransformedBounds().width - 10;
@@ -116,8 +137,8 @@ export default {
             this.containers.push(container)
 
             stage.addChild(container);
-            container.on("pressmove", function (evt) {
-                //alert(1)
+            container.on("pressmove", (evt) => {
+
                 // currentTarget will be the container that the event listener was added to:
                 evt.currentTarget.x = evt.stageX;
                 evt.currentTarget.y = evt.stageY;
@@ -193,6 +214,12 @@ export default {
             //stage.addChild(objLine);
             //context.fillText(line, x, y);
             return objLineArray;
+        },
+        getContainers() {
+            return this.containers;
+        },
+        getItems() {
+            return this.items;
         },
         test() {
             console.log(stage.toDataURL());
