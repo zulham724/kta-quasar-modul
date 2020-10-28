@@ -125,7 +125,7 @@ export default {
         ...mapState(["Auth", "Setting", "Grade", "Module"]),
         selectedTemplate: function () {
             if (this.Module.build.selected_template) return `${this.Setting.storageUrl}/${this.Module.build.selected_template.image}`;
-            else return "cover-template.png";
+            else return null;
         }
     },
     mounted() {
@@ -144,7 +144,17 @@ export default {
             });
 
         }
+        //set default canvas data
+        if (this.Module.build.canvas_data.length == 0) {
+            const default_canvas_data = this.$store.getters['CoverDesign/default_canvas_data'];
+            this.$store.commit("Module/setCanvasData", {
+                canvas_data: default_canvas_data
 
+            });
+
+        }
+
+        //semua data dari store Module akan dimasukkna ke data module lokal
         this.module = {
             ...this.Module.build,
             //contents: [...this.Module.build.contents]
@@ -177,7 +187,7 @@ export default {
                 this.$store.commit("Module/setContents", {
                     contents: newVal
                 });
-                console.log('cok')
+                //console.log('cok')
                 console.log(newVal)
             },
             deep: true
@@ -210,7 +220,7 @@ export default {
                         // console.log('>>>> OK')
                         this.loading = true;
                         this.module.is_publish = is_publish
-
+                        //this.module.canvas
                         this.$store.dispatch("Module/store", this.module).then(res => {
                             this.$store.commit('Module/resetBuild');
                             this.$q.notify(is_publish ? 'Berhasil menerbitkan modul' : 'Berhasil menyimpan modul')

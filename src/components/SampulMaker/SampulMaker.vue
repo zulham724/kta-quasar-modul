@@ -235,8 +235,8 @@ export default {
         getItems() {
             return this.items;
         },
-        test() {
-            console.log(stage.toDataURL());
+        toDataURL() {
+            return stage.toDataURL();
         }
     }
 }

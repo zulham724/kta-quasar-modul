@@ -127,11 +127,7 @@ export default {
                 ...this.Module.build.selected_template.canvas_data
             }
         }
-        // console.log(this.module)
-        // if (this.module.contents.length == 0) this.module.contents.push({
-        //     name: 'Judul bab',
-        //     value: 'Isi bab'
-        // })
+
     },
     watch: {
         // 'template.canvas_data': {
@@ -154,7 +150,7 @@ export default {
     },
     methods: {
         saveCover() {
-            this.$refs.myCanvas.test();
+            //this.$refs.myCanvas.toDataURL();
             let canvas_data = [];
             //console.log(this.items)
             this.$refs.myCanvas.getContainers().forEach(container => {
@@ -169,7 +165,10 @@ export default {
             this.$store.commit("Module/setCanvasData", {
                 canvas_data: canvas_data
             });
-            console.log(this.Module.build.canvas_data)
+            this.$store.commit("Module/setCanvasImage", {
+                canvas_image: this.$refs.myCanvas.toDataURL()
+            });
+            //console.log(this.Module.build.canvas_data)
 
         },
         resetCover() {
