@@ -1,16 +1,17 @@
 <template>
 <div style="width:100%">
     <canvas id="myCanvas" style="width:100%"></canvas>
+    <slot name="between"></slot>
     <div v-for="(item, n) in items" :key="n">
-        <div class="row" v-if="selectedContainer && selectedContainer.index==n">
-            <div class="col">
-                <slot name="color" :item="item">
-                </slot>
+        <div v-if="selectedContainer && selectedContainer.index==n">
+            <div v-for="(config, i) in configs" :key="i">
+                <div>
+                    <slot :name="config.name" :item="item">
+                    </slot>
+                </div>
+
             </div>
-            <div class="col">
-                <slot name="size" :item="item">
-                </slot>
-            </div>
+
         </div>
     </div>
 </div>
@@ -29,7 +30,19 @@ var stage, bitmap;
 export default {
     props: {
         items: Array,
-        img: String
+        img: String,
+        configs: {
+            type: Array,
+            default: function () {
+                return [{
+                    name: 'color',
+                    label: 'Warna teks'
+                }, {
+                    name: 'size',
+                    label: 'Ukuran teks'
+                }]
+            }
+        }
     },
     watch: {
         items: {
@@ -65,6 +78,7 @@ export default {
         }
     },
     mounted() {
+        console.log(this.configs)
         stage = new Stage("myCanvas");
         Touch.enable(stage);
         //        createjs.Touch.enable(stage);

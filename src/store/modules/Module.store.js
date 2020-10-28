@@ -27,13 +27,14 @@ const mutations = {
         state.build =  {
             is_publish: true,
             grade: null,
-            name:'',
+            name:null,
             description:null,
             contents:[],
             selected_template:null,
             template_category:'',
             owned_template_category:null,
             subject:null,
+            canvas_data:[]
         }
     },
     set(state, payload) {
@@ -61,7 +62,7 @@ const mutations = {
     },
     setSelectedTemplate(state, payload){
         state.build.selected_template = payload.selected_template
-        console.log('asu');
+        //console.log('asu');
         //state.build.selected_template.canvas_data = {}
     },
     setName(state, payload){

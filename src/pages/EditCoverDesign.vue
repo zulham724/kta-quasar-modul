@@ -10,17 +10,25 @@
     </q-header>
     <q-page class="q-pa-xs">
         <div class="row q-gutter-sm q-mb-sm">
-            <q-btn @click="saveCover" color="primary">Simpan Cover</q-btn>
-            <q-btn @click="resetCover" color="warning">Reset Cover</q-btn>
+            <!--<q-btn @click="saveCover" color="primary">Simpan Cover</q-btn>
+            <q-btn @click="resetCover" color="warning">Reset Cover</q-btn>-->
 
         </div>
         <div class="row justify-center q-mb-md" v-if="img!=null">
 
-            <sampul-maker :img="img" :items="items" ref="myCanvas">
+            <sampul-maker :configs="[{name:'size'},{name:'color'}]" :img="img" :items="items" ref="myCanvas">
+                <template v-slot:between>
+                    <div class="row justify-between">
+                        <q-btn fab icon="save" @click="saveCover" color="primary" label="Simpan" />
+                        <q-btn fab icon="replay" @click="resetCover" color="warning" label="Reset" />
+                    </div>
+                </template>
                 <template v-slot:color="{item}">
+                    Warna teks
                     <q-color v-model="item.color" class="my-picker" />
                 </template>
                 <template v-slot:size="{item}">
+                    Ukuran teks
                     <q-slider label v-model="item.size" :min="1" :max="20" />
                 </template>
             </sampul-maker>
@@ -146,6 +154,7 @@ export default {
     },
     methods: {
         saveCover() {
+            this.$refs.myCanvas.test();
             let canvas_data = [];
             //console.log(this.items)
             this.$refs.myCanvas.getContainers().forEach(container => {
