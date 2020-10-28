@@ -26,11 +26,17 @@ import {
     Text,
     Touch
 } from "@createjs/easeljs";
-var stage, bitmap;
+var stage, bitmap, isLoaded = false;
 export default {
     props: {
         items: Array,
         img: String,
+        isMounted: {
+            type: Boolean,
+            default: function () {
+                return false
+            }
+        },
         configs: {
             type: Array,
             default: function () {
@@ -44,10 +50,14 @@ export default {
             }
         }
     },
+    created() {
+        this.image = this.img;
+    },
     watch: {
         items: {
             handler: function (newVal, oldVal) {
-                //console.log('warna ' + this.containers[0].getChildAt(1).color)
+                if (!bitmap.getTransformedBounds()) return;
+
                 let previousContainerData = [];
                 let removedChildIndex = [];
                 for (let i = 1; i < stage.numChildren; i++) {
@@ -72,13 +82,15 @@ export default {
     },
     data() {
         return {
+            image: null,
             containers: [],
             selectedContainer: null,
-            //selectedContainerIndex: -1
+
         }
     },
     mounted() {
-        console.log(this.configs)
+        //console.log(this.configs)
+        if (!this.isMounted) return;
         stage = new Stage("myCanvas");
         Touch.enable(stage);
         //        createjs.Touch.enable(stage);
@@ -98,14 +110,41 @@ export default {
                 else item.text = '';
                 this.createText(stage, bitmap, item, item_index)
             });
-
+            isLoaded = img.complete && img.naturalHeight !== 0;
             //stage.update();
 
         }
         img.crossOrigin = "Anonymous"
-        img.src = this.img;
+        img.src = this.image;
     },
     methods: {
+        initialize() {
+            return new Promise((resolve, reject) => {
+                stage = new Stage("myCanvas");
+                Touch.enable(stage);
+                var img = new Image;
+                bitmap = new Bitmap(img);
+                img.onload = () => {
+                    bitmap.setTransform(0, 0, 1, 1);
+                    //stage section
+                    stage.addChild(bitmap);
+                    stage.canvas.width = bitmap.getTransformedBounds().width;
+                    stage.canvas.height = bitmap.getTransformedBounds().height;
+
+                    //section buat text & rect
+                    this.items.forEach((item, item_index) => {
+                        if (item.text) item.text = item.text.toString();
+                        else item.text = '';
+                        this.createText(stage, bitmap, item, item_index)
+                    });
+                    isLoaded = img.complete && img.naturalHeight !== 0;
+                    resolve(isLoaded)
+                    //stage.update();
+                }
+                img.crossOrigin = "Anonymous"
+                img.src = this.image;
+            })
+        },
         resetContainers() {
             let removedChildIndex = [];
             for (let i = 1; i < stage.numChildren; i++) {
@@ -115,7 +154,8 @@ export default {
             stage.removeChildAt(...removedChildIndex)
             this.containers = [];
         },
-        initialize() {
+        //merefresh canvas jika data items berubah
+        refreshCanvas() {
             this.resetContainers();
             this.items.forEach((item, item_index) => {
                 this.createText(stage, bitmap, item, item_index)
@@ -237,7 +277,13 @@ export default {
         },
         toDataURL() {
             return stage.toDataURL();
+        },
+        setImage(img) {
+            this.image = img;
+        },
+        setItems(items) {
+            this.items = items;
         }
-    }
+    },
 }
 </script>

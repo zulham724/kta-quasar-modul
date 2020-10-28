@@ -14,24 +14,33 @@
             <q-btn @click="resetCover" color="warning">Reset Cover</q-btn>-->
 
         </div>
-        <div class="row justify-center q-mb-md" v-if="img!=null">
+        <div class="row justify-center q-mb-md">
 
             <sampul-maker :configs="[{name:'size'},{name:'color'}]" :img="img" :items="items" ref="myCanvas">
-                <template v-slot:between>
+                <!--<template v-slot:between>
                     <div class="row justify-between">
                         <q-btn fab icon="save" @click="saveCover" color="primary" label="Simpan" />
                         <q-btn fab icon="replay" @click="resetCover" color="warning" label="Reset" />
                     </div>
-                </template>
+                </template>-->
                 <template v-slot:color="{item}">
                     Warna teks
-                    <q-color v-model="item.color" class="my-picker" />
+                    <q-color v-model="item.color" />
+
                 </template>
                 <template v-slot:size="{item}">
                     Ukuran teks
                     <q-slider label v-model="item.size" :min="1" :max="20" />
                 </template>
             </sampul-maker>
+            <q-page-sticky position="bottom-right" :offset="[18, 18]">
+                <div class="row q-mb-sm">
+                    <q-btn fab icon="save" @click="saveCover" color="primary" />
+                </div>
+                <div class="row">
+                    <q-btn fab icon="replay" @click="resetCover" color="warning" />
+                </div>
+            </q-page-sticky>
             <!--<sampul-maker></sampul-maker>-->
         </div>
 
@@ -63,15 +72,23 @@ export default {
     },
     computed: {
         ...mapState(["Auth", "Setting", "Grade", "Module"]),
-        selectedTemplate: function () {
-            if (this.Module.build.selected_template) return `${this.Setting.storageUrl}/${this.Module.build.selected_template.image}`;
-            else return null;
-        }
+
     },
     mounted() {
-        this.img = this.selectedTemplate;
-        var d = new Date();
+        //alert(this.img)
+        if (this.img) this.$refs.myCanvas.initialize();
 
+        //console.log()
+    },
+    created: function () {
+
+        if (!this.Module.build.selected_template) {
+            this.$q.notify('Silahkan pilih template')
+            return this.$router.push('/create')
+        }
+
+        this.img = this.Module.build.selected_template ? `${this.Setting.storageUrl}/${this.Module.build.selected_template.image}` : null; //img HARUS taruh di created (sebelum DOM dirender)
+        var d = new Date();
         this.items.push({
             text: this.Module.build.name,
             color: '#000000',
@@ -97,16 +114,14 @@ export default {
             //x_append: -150,
             //x: 150, //jika x terdefinisi, x_append akan dihiraukan
             y: 900, //posisi awal y
+        }, {
+            text: this.Module.build.grade ? this.Module.build.grade.description : null,
+            color: '#000000',
+            size: 8,
+            x_append: 400,
+            y: 20, //posisi awal y
         });
-        if (this.Module.build.grade) {
-            this.items.push({
-                text: this.Module.build.grade.description,
-                color: '#000000',
-                size: 8,
-                x_append: 400,
-                y: 20, //posisi awal y
-            })
-        }
+
         this.Module.build.canvas_data.forEach((item, i) => {
             console.log(item)
             this.items[i].x = item.x;
@@ -114,19 +129,12 @@ export default {
             this.items[i].color = item.color;
             this.items[i].size = item.size;
         });
-        //console.log()
-    },
-    created: function () {
-        if (!this.Module.build.selected_template) {
-            this.$q.notify('Silahkan pilih template')
-            return this.$router.push('/create')
-        }
-        this.template = {
-            ...this.Module.build.selected_template,
-            canvas_data: {
-                ...this.Module.build.selected_template.canvas_data
-            }
-        }
+        // this.template = {
+        //     ...this.Module.build.selected_template,
+        //     canvas_data: {
+        //         ...this.Module.build.selected_template.canvas_data
+        //     }
+        // }
 
     },
     watch: {
@@ -150,7 +158,7 @@ export default {
     },
     methods: {
         saveCover() {
-            //this.$refs.myCanvas.toDataURL();
+            console.log(this.$refs.myCanvas.toDataURL());
             let canvas_data = [];
             //console.log(this.items)
             this.$refs.myCanvas.getContainers().forEach(container => {
@@ -201,7 +209,7 @@ export default {
                 this.items[i].color = item.color
                 this.items[i].size = item.size
             });
-            this.$refs.myCanvas.initialize(this.items);
+            this.$refs.myCanvas.refreshCanvas();
         },
         editCover() {
             this.$router.push('/editcoverdesign')

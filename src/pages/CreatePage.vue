@@ -92,20 +92,28 @@
             </q-form>
         </div>
     </q-page>
+    <!--Jika user tidak memilih sampul (menekan tombol SIMPAN SAMPUL), maka buat sampul default-->
+    <sampul-maker :items="sampulMakerItems" v-show="false" ref="sampulMaker1"></sampul-maker>
 </div>
 </template>
 
 <script>
+import SampulMaker from 'components/SampulMaker/SampulMaker.vue';
+
 import {
     mapState
 } from "vuex";
 import {
     debounce
 } from 'quasar'
-// import CreateMessage from "components/CreateModul/EditModul";
+// import CreateMessage from "compasdonents/CreateModul/EditModul";
 export default {
+    components: {
+        'SampulMaker': SampulMaker
+    },
     data() {
         return {
+            sampulMaker: false,
             loading: false,
             file: null,
             model: null,
@@ -119,6 +127,7 @@ export default {
                 contents: [],
                 selected_template: null,
             },
+            sampulMakerItems: []
         }
     },
     computed: {
@@ -221,6 +230,49 @@ export default {
                         this.loading = true;
                         this.module.is_publish = is_publish
                         //this.module.canvas
+                        if (this.Module.build.canvas_image == null) {
+                            this.sampulMaker = true;
+                            this.$refs.sampulMaker1.setImage(this.selectedTemplate)
+                            var d = new Date();
+                            this.sampulMakerItems = [{
+                                text: this.Module.build.name,
+                                color: '#000000',
+                                size: 7,
+                                //x_append: -100, //posisi x_center ditambah dgn x_append
+                                y: 200, //posisi awal y
+                            }, {
+                                text: this.Module.build.subject,
+                                color: '#000000',
+                                size: 8,
+                                y: 700, //posisi awal y
+                            }, {
+                                text: d.getFullYear(),
+                                color: '#000000',
+                                size: 8,
+                                //x_append: -150,
+                                x: 150, //jika x terdefinisi, x_append akan dihiraukan
+                                y: 20, //posisi awal y
+                            }, {
+                                text: this.Auth.auth.name,
+                                color: '#000000',
+                                size: 5,
+                                //x_append: -150,
+                                //x: 150, //jika x terdefinisi, x_append akan dihiraukan
+                                y: 900, //posisi awal y
+                            }, {
+                                text: this.Module.build.grade ? this.Module.build.grade.description : null,
+                                color: '#000000',
+                                size: 8,
+                                x_append: 400,
+                                y: 20, //posisi awal y
+                            }];
+                            //this.$refs.sampulMaker1.setItems(items)
+                            this.$refs.sampulMaker1.initialize().then(res => {
+                                console.log(this.$refs.sampulMaker1.toDataURL())
+                            })
+
+                            return;
+                        }
                         this.$store.dispatch("Module/store", this.module).then(res => {
                             this.$store.commit('Module/resetBuild');
                             this.$q.notify(is_publish ? 'Berhasil menerbitkan modul' : 'Berhasil menyimpan modul')
