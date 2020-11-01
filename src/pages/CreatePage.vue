@@ -83,10 +83,10 @@
                 </q-card>
                 <q-item class="q-px-sm" style="padding-top:0px">
                     <q-item-section class="q-pr-sm">
-                        <q-btn @click="submitModule(0)" :disable="loading" rounded color="grey" label="Simpan"></q-btn>
+                        <q-btn @click="checkAndSubmitModule(0)" :disable="loading" rounded color="grey" label="Simpan"></q-btn>
                     </q-item-section>
                     <q-item-section class="q-pl-sm">
-                        <q-btn rounded @click="submitModule(1)" :disable="loading" style="color:white;background-color:#840000" label="Publish"></q-btn>
+                        <q-btn rounded @click="checkAndSubmitModule(1)" :disable="loading" style="color:white;background-color:#840000" label="Publish"></q-btn>
                     </q-item-section>
                 </q-item>
             </q-form>
@@ -146,8 +146,8 @@ export default {
         if (!this.Module.build.selected_template) {
             this.$store.commit("Module/setSelectedTemplate", {
                 selected_template: {
-                    image: 'templates/October2020/1XBirYr1KSgigOrMJxYC.png',
-                    name: 'frecklepattern'
+                    image: 'templates/October2020/emH3LgQcs5edpDfMlDui.png',
+                    name: 'default template'
                 }
                 //template default
             });
@@ -214,10 +214,25 @@ export default {
     },
     methods: {
         editCover() {
-
             this.$router.push('/editcoverdesign');
         },
-        submitModule(is_publish) {
+        submitModule() {
+            this.$store.dispatch("Module/store", this.module).then(res => {
+                this.$store.commit('Module/resetBuild');
+                this.$q.notify(res.data.is_publish ? 'Berhasil menerbitkan modul' : 'Berhasil menyimpan modul')
+                this.$store.dispatch("Module/getPublishedModules");
+                this.$router.push('/');
+            }).catch(err => {
+                console.log(err.response);
+                //return;
+                if (err.response.data.errors.selected_template) {
+                    this.$q.notify('Sampul modul harus dipilih');
+                }
+            }).finally(() => {
+                this.loading = false;
+            });
+        },
+        checkAndSubmitModule(is_publish) {
             this.$refs.myForm.validate().then(success => {
                 if (success) {
                     this.$q.dialog({
@@ -229,7 +244,8 @@ export default {
                         // console.log('>>>> OK')
                         this.loading = true;
                         this.module.is_publish = is_publish
-                        //this.module.canvas
+
+                        //Jika user tidak memilih template, makan template default akan diambil dengan SampulMaker.vue
                         if (this.Module.build.canvas_image == null) {
                             this.sampulMaker = true;
                             this.$refs.sampulMaker1.setImage(this.selectedTemplate)
@@ -268,25 +284,14 @@ export default {
                             }];
                             //this.$refs.sampulMaker1.setItems(items)
                             this.$refs.sampulMaker1.initialize().then(res => {
-                                console.log(this.$refs.sampulMaker1.toDataURL())
+                                this.module.canvas_image = this.$refs.sampulMaker1.toDataURL()
+                                this.submitModule();
                             })
 
-                            return;
+                        } else {
+                            this.submitModule();
                         }
-                        this.$store.dispatch("Module/store", this.module).then(res => {
-                            this.$store.commit('Module/resetBuild');
-                            this.$q.notify(is_publish ? 'Berhasil menerbitkan modul' : 'Berhasil menyimpan modul')
-                            this.$store.dispatch("Module/getPublishedModules");
-                            this.$router.push('/');
-                        }).catch(err => {
-                            console.log(err.response);
-                            //return;
-                            if (err.response.data.errors.selected_template) {
-                                this.$q.notify('Sampul modul harus dipilih');
-                            }
-                        }).finally(() => {
-                            this.loading = false;
-                        });
+
                     }).onOk(() => {
                         // console.log('>>>> second OK catcher')
                     }).onCancel(() => {

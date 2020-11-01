@@ -41,12 +41,17 @@ export default {
             type: Array,
             default: function () {
                 return [{
-                    name: 'color',
-                    label: 'Warna teks'
-                }, {
-                    name: 'size',
-                    label: 'Ukuran teks'
-                }]
+                        name: 'color',
+                        label: 'Warna teks'
+                    }, {
+                        name: 'fontfamily',
+                        label: 'Jenis teks'
+                    }, {
+                        name: 'size',
+                        label: 'Ukuran teks'
+                    },
+
+                ]
             }
         }
     },
@@ -236,16 +241,17 @@ export default {
             var line = '';
             var objLine;
             var objTestLine;
+            const fontStyle = `${fontsize}px '${objText.fontfamily?objText.fontfamily:'Arial'}'`;
+
             for (var n = 0; n < words.length; n++) {
                 var testLine = line + words[n] + ' ';
-
-                objTestLine = new Text(testLine, fontsize + "px Arial");
+                objTestLine = new Text(testLine, fontStyle, objText.color);
                 var testWidth = objTestLine.getMeasuredWidth();
                 // objTestLine.x=x;
                 // objTestLine.y=y;
                 if (testWidth > maxWidth && n > 0) {
 
-                    objLine = new Text(line, fontsize + "px Arial", objText.color);
+                    objLine = new Text(line, fontStyle, objText.color);
                     objLine.x = x;
                     objLine.y = y;
                     objLine.textBaseline = "top";
@@ -259,7 +265,7 @@ export default {
                     line = testLine;
                 }
             }
-            objLine = new Text(line, fontsize + "px Arial", objText.color);
+            objLine = new Text(line, fontStyle, objText.color);
             objLine.x = x;
             objLine.y = y;
             objLine.textBaseline = "top";

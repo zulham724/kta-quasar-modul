@@ -16,7 +16,7 @@
         </div>
         <div class="row justify-center q-mb-md">
 
-            <sampul-maker :configs="[{name:'size'},{name:'color'}]" :img="img" :items="items" ref="myCanvas">
+            <sampul-maker :configs="[{name:'size'},{name:'fontfamily'},{name:'color'}]" :img="img" :items="items" ref="myCanvas">
                 <!--<template v-slot:between>
                     <div class="row justify-between">
                         <q-btn fab icon="save" @click="saveCover" color="primary" label="Simpan" />
@@ -31,6 +31,12 @@
                 <template v-slot:size="{item}">
                     Ukuran teks
                     <q-slider label v-model="item.size" :min="1" :max="20" />
+                </template>
+                <template v-slot:fontfamily="{item}">
+                    Jenis font
+
+                    <q-select dense outlined v-model="item.fontfamily" :options="fontoptions" label="Jenis font" />
+
                 </template>
             </sampul-maker>
             <q-page-sticky position="bottom-right" :offset="[18, 18]">
@@ -67,7 +73,8 @@ export default {
             loading: false,
             options: [],
             items: [],
-            img: null
+            img: null,
+            fontoptions: ['Arial', 'Dancing Script', 'Roboto', 'Vampiro One', 'Domine']
         }
     },
     computed: {
@@ -205,6 +212,7 @@ export default {
             }];
             default_attr.forEach((item, i) => {
                 this.items[i].x = item.x
+                this.items[i].fontfamily = 'Arial';
                 this.items[i].y = item.y
                 this.items[i].color = item.color
                 this.items[i].size = item.size
