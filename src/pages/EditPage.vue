@@ -111,6 +111,8 @@
 </template>
 
 <script>
+import SampulMaker from 'components/SampulMaker/SampulMaker.vue';
+
 import {
     mapState
 } from "vuex";
@@ -142,6 +144,7 @@ export default {
                 module_contents: [],
                 template: null,
             },
+            sampulMakerItems: []
         }
     },
     computed: {
@@ -270,10 +273,13 @@ export default {
                 this.$store.commit('ModuleForEdit/setModuleId', {
                     module_id: moduleId
                 });
-                //console.log('cok')
+                console.log('cok')
+                console.log(res.data)
+
                 const canvasData = JSON.parse(res.data.canvas_data);
                 this.module = {
                     ...res.data,
+                    canvas_image: res.data.template.image,
                     template: {
                         image: canvasData.image,
                         name: canvasData.name
@@ -288,9 +294,47 @@ export default {
                     grade: {
                         ...res.data.grade
                     }
-                }
+                };
+                var d = new Date();
+                this.sampulMakerItems = [{
+                    text: this.module.name,
+                }, {
+                    text: this.module.subject,
+
+                }, {
+                    text: d.getFullYear(),
+
+                }, {
+                    text: this.Auth.auth.name,
+
+                }, {
+                    text: this.module.grade ? this.module.grade.description : null,
+
+                }];
+                ///////////////////////////////
+                //section untuk render canvas//
+                this.$refs.sampulMaker2.setImage(`${this.Setting.storageUrl}/${canvasData.image}`);
+                canvasData.items.forEach((item, i) => {
+                    this.sampulMakerItems[i].y = item.y;
+                    this.sampulMakerItems[i].x = item.x ? item.x : 0;
+                    this.sampulMakerItems[i].fontfamily = item.fontfamily ? item.fontfamily : 'Arial';
+                    this.sampulMakerItems[i].color = item.color;
+                    this.sampulMakerItems[i].size = item.size;
+                });
+                this.$refs.sampulMaker2.initialize().then(res => {
+                    const imageData = this.$refs.sampulMaker2.toDataURL();
+                    console.log(imageData)
+                    this.module.canvas_image = imageData;
+                    this.$store.commit("ModuleForEdit/setCanvasImage", {
+                        canvas_image: imageData
+                    });
+                    // this.submitModule();
+                });
+                //////////////////////////////////////
+
             }).catch(err => {
                 //alert(err)
+                //console.log(err)
                 this.$q.notify('Data tidak ditemukan');
                 this.$router.back();
             })

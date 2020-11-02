@@ -1,5 +1,6 @@
 <template>
 <div style="width:100%">
+    <slot name="loading" v-if="loading"></slot>
     <canvas id="myCanvas" style="width:100%"></canvas>
     <slot name="between"></slot>
     <div v-for="(item, n) in items" :key="n">
@@ -62,6 +63,7 @@ export default {
         items: {
             handler: function (newVal, oldVal) {
                 if (!bitmap.getTransformedBounds()) return;
+                //if (!bitmap) return;
 
                 let previousContainerData = [];
                 let removedChildIndex = [];
@@ -91,12 +93,15 @@ export default {
             image: null,
             containers: [],
             selectedContainer: null,
+            loading: false,
 
         }
     },
     mounted() {
         //console.log(this.configs)
         if (!this.isMounted) return;
+        this.loading = true;
+
         stage = new Stage("myCanvas");
         Touch.enable(stage);
         //        createjs.Touch.enable(stage);
@@ -126,6 +131,7 @@ export default {
     methods: {
         initialize() {
             return new Promise((resolve, reject) => {
+                this.loading = true;
                 stage = new Stage("myCanvas");
                 Touch.enable(stage);
                 var img = new Image;
@@ -144,6 +150,7 @@ export default {
                         this.createText(stage, bitmap, item, item_index)
                     });
                     isLoaded = img.complete && img.naturalHeight !== 0;
+                    this.loading = false;
                     resolve(isLoaded)
                     //stage.update();
                 }
@@ -284,6 +291,9 @@ export default {
         },
         toDataURL() {
             return stage.toDataURL();
+        },
+        isLoading() {
+            return this.loading;
         },
         setImage(img) {
             this.image = img;

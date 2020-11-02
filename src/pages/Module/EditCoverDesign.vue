@@ -7,7 +7,7 @@
                 <div class="text-body2 text-weight-light" style="font-size:15px">Edit Cover Template</div>
             </q-toolbar-title>
             <!--<q-btn flat round dense icon="more_vert"></q-btn>-->
-            <q-btn @click="saveCover" flat label="Lanjut"></q-btn>
+            <q-btn @click="saveCover" :disable="loading" flat label="Lanjut"></q-btn>
         </q-toolbar>
     </q-header>
     <q-page class="q-pa-xs">
@@ -19,12 +19,11 @@
         <div class="row justify-center q-mb-md">
 
             <sampul-maker :configs="[{name:'size'},{name:'fontfamily'},{name:'color'}]" :img="img" :items="items" ref="myCanvas">
-                <!--<template v-slot:between>
-                    <div class="row justify-between">
-                        <q-btn fab icon="save" @click="saveCover" color="primary" label="Simpan" />
-                        <q-btn fab icon="replay" @click="resetCover" color="warning" label="Reset" />
+                <template v-slot:loading>
+                    <div class="row justify-center q-my-md">
+                        <q-spinner-dots color="primary" size="40px" />
                     </div>
-                </template>-->
+                </template>
                 <template v-slot:color="{item}">
                     Warna teks
                     <q-color v-model="item.color" />
@@ -85,9 +84,11 @@ export default {
 
     },
     mounted() {
-        //alert(this.selectedImage)
 
-        if (this.img) this.$refs.myCanvas.initialize();
+        this.loading = true;
+        if (this.img) this.$refs.myCanvas.initialize().then(res => {
+            this.loading = false;
+        });
 
         //console.log()
     },
@@ -201,7 +202,8 @@ export default {
             this.$store.commit("Module/setCanvasImage", {
                 canvas_image: this.$refs.myCanvas.toDataURL()
             });
-            //console.log(this.Module.build.canvas_data)
+            // console.log('babi')
+            // console.log(this.Module.build.canvas_image)
             this.$router.push('/create');
 
         },
