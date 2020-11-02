@@ -13,6 +13,11 @@ const state = {
         template_category:null,
         owned_template_category:null,
         subject:null,
+        canvas_data:{
+            image:null,
+            items:[]
+        },
+        canvas_image:null
     },
     // modules_count:null,
     // likes_count:null,
@@ -35,6 +40,11 @@ const mutations = {
             template_category:null,
             owned_template_category:null,
             subject:null,
+            canvas_data:{
+                image:null,
+                items:[]
+            },
+            canvas_image:null
         }
     },
     set(state, payload) {
@@ -65,7 +75,7 @@ const mutations = {
     },
     setTemplate(state, payload){
         state.build.template = payload.template;
-        state.build.template.canvas_data = {}
+        //state.build.template.canvas_data = {}
     },
     setSubject(state, payload){
         state.build.subject = payload.subject
@@ -99,6 +109,15 @@ const mutations = {
     },
     setModuleId(state, payload){
         state.build.module_id=payload.module_id;
+    },
+    setCanvasData(state, payload){
+        state.build.canvas_data.items = [...payload.canvas_data.map(item=>{
+            return {...item}
+        })];
+        state.build.canvas_data.image = payload.image;
+    },
+    setCanvasImage(state, payload){
+        state.build.canvas_image = payload.canvas_image
     }
 };
 

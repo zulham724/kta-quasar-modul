@@ -29,7 +29,7 @@
                         <q-input v-model="module.subject" dense color="red-10"></q-input>
                     </div>
                     <div class="col-4 q-pa-sm text-center" style="background-color:white">
-                        <div class="vertical-middle">
+                        <div class="vertical-middle" @click="editCover">
                             <q-img :src="selectedTemplate" style="max-width:100%;max-height:100%;">
                             </q-img>
                             <div class="text-caption">{{module.template?module.template.name:null}}</div>
@@ -105,6 +105,8 @@
             </q-card>
         </q-dialog>
     </q-page>
+
+    <sampul-maker :items="sampulMakerItems" v-show="false" ref="sampulMaker2"></sampul-maker>
 </div>
 </template>
 
@@ -120,8 +122,12 @@ export default {
     props: {
         moduleId: null
     },
+    components: {
+        'SampulMaker': SampulMaker
+    },
     data() {
         return {
+            sampulMaker: false,
             confirm: false,
             loading: false,
             file: null,
@@ -141,12 +147,13 @@ export default {
     computed: {
         ...mapState(["Auth", "Setting", "Grade", "ModuleForEdit"]),
         selectedTemplate: function () {
-            if (this.module.template) return `${this.Setting.storageUrl}/${this.module.template.image}`;
-            else return "cover-template.png";
+            if (this.ModuleForEdit.build.canvas_image) return this.ModuleForEdit.build.canvas_image;
+            else if (this.ModuleForEdit.build.template) return `${this.Setting.storageUrl}/${this.ModuleForEdit.build.template.image}`;
+            else return null;
         }
     },
     mounted() {
-        console.log(this.ModuleForEdit.build)
+        //console.log(this.ModuleForEdit.build)
         if (!this.Grade.items.length) this.$store.dispatch("Grade/index");
 
     },
@@ -172,6 +179,7 @@ export default {
             }
 
         }
+        //console.log(this.ModuleForEdit.build)
         // this.module = {
         //     ...this.Module.build,
         //     //contents: [...this.Module.build.contents]
@@ -227,10 +235,24 @@ export default {
 
     },
     methods: {
+        editCover() {
+            if (this.ModuleForEdit.build.template) {
+                this.$router.push({
+                    name: 'editcoverdesignedit',
+                    params: {
+                        selectedImage: this.ModuleForEdit.build.template
+                    }
+                });
+
+            } else {
+                this.$q.notify('Silahkan pilih template terlebih dahulu')
+            }
+        },
         cloneModuleFromStore() {
             this.module = {
                 ...this.ModuleForEdit.build,
                 //contents: [...this.Module.build.contents]
+
                 module_contents: [...this.ModuleForEdit.build.module_contents.map(content => {
                     return {
                         ...content
@@ -247,11 +269,14 @@ export default {
                 */
                 this.$store.commit('ModuleForEdit/setModuleId', {
                     module_id: moduleId
-                })
+                });
+                //console.log('cok')
+                const canvasData = JSON.parse(res.data.canvas_data);
                 this.module = {
                     ...res.data,
                     template: {
-                        ...res.data.template
+                        image: canvasData.image,
+                        name: canvasData.name
                     },
                     module_contents: [
                         ...res.data.module_contents.map(item => {

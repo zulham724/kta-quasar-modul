@@ -133,7 +133,8 @@ export default {
     computed: {
         ...mapState(["Auth", "Setting", "Grade", "Module"]),
         selectedTemplate: function () {
-            if (this.Module.build.selected_template) return `${this.Setting.storageUrl}/${this.Module.build.selected_template.image}`;
+            if (this.Module.build.canvas_image) return this.Module.build.canvas_image;
+            else if (this.Module.build.selected_template) return `${this.Setting.storageUrl}/${this.Module.build.selected_template.image}`;
             else return null;
         }
     },
@@ -154,10 +155,11 @@ export default {
 
         }
         //set default canvas data
-        if (this.Module.build.canvas_data.length == 0) {
+        if (this.Module.build.canvas_data.items.length == 0) {
             const default_canvas_data = this.$store.getters['CoverDesign/default_canvas_data'];
             this.$store.commit("Module/setCanvasData", {
-                canvas_data: default_canvas_data
+                canvas_data: default_canvas_data,
+                image: 'templates/October2020/emH3LgQcs5edpDfMlDui.png'
 
             });
 
@@ -214,7 +216,17 @@ export default {
     },
     methods: {
         editCover() {
-            this.$router.push('/editcoverdesign');
+            if (this.Module.build.selected_template) {
+                this.$router.push({
+                    name: 'editcoverdesign',
+                    params: {
+                        selectedImage: this.Module.build.selected_template
+                    }
+                });
+
+            } else {
+                this.$q.notify('Silahkan pilih template terlebih dahulu')
+            }
         },
         submitModule() {
             this.$store.dispatch("Module/store", this.module).then(res => {
@@ -241,56 +253,65 @@ export default {
                         cancel: true,
                         persistent: true
                     }).onOk(() => {
-                        // console.log('>>>> OK')
                         this.loading = true;
                         this.module.is_publish = is_publish
 
-                        //Jika user tidak memilih template, makan template default akan diambil dengan SampulMaker.vue
+                        //Jika user tidak memilih template, maka template default akan diambil dengan SampulMaker.vue
+                        this.sampulMaker = true;
                         if (this.Module.build.canvas_image == null) {
-                            this.sampulMaker = true;
                             this.$refs.sampulMaker1.setImage(this.selectedTemplate)
-                            var d = new Date();
-                            this.sampulMakerItems = [{
-                                text: this.Module.build.name,
-                                color: '#000000',
-                                size: 7,
-                                //x_append: -100, //posisi x_center ditambah dgn x_append
-                                y: 200, //posisi awal y
-                            }, {
-                                text: this.Module.build.subject,
-                                color: '#000000',
-                                size: 8,
-                                y: 700, //posisi awal y
-                            }, {
-                                text: d.getFullYear(),
-                                color: '#000000',
-                                size: 8,
-                                //x_append: -150,
-                                x: 150, //jika x terdefinisi, x_append akan dihiraukan
-                                y: 20, //posisi awal y
-                            }, {
-                                text: this.Auth.auth.name,
-                                color: '#000000',
-                                size: 5,
-                                //x_append: -150,
-                                //x: 150, //jika x terdefinisi, x_append akan dihiraukan
-                                y: 900, //posisi awal y
-                            }, {
-                                text: this.Module.build.grade ? this.Module.build.grade.description : null,
-                                color: '#000000',
-                                size: 8,
-                                x_append: 400,
-                                y: 20, //posisi awal y
-                            }];
-                            //this.$refs.sampulMaker1.setItems(items)
-                            this.$refs.sampulMaker1.initialize().then(res => {
-                                this.module.canvas_image = this.$refs.sampulMaker1.toDataURL()
-                                this.submitModule();
-                            })
-
-                        } else {
-                            this.submitModule();
                         }
+                        var d = new Date();
+                        this.sampulMakerItems = [{
+                            text: this.Module.build.name,
+                            color: '#000000',
+                            size: 7,
+                            //x_append: -100, //posisi x_center ditambah dgn x_append
+                            y: 200, //posisi awal y
+                        }, {
+                            text: this.Module.build.subject,
+                            color: '#000000',
+                            size: 8,
+                            y: 700, //posisi awal y
+                        }, {
+                            text: d.getFullYear(),
+                            color: '#000000',
+                            size: 8,
+                            //x_append: -150,
+                            x: 150, //jika x terdefinisi, x_append akan dihiraukan
+                            y: 20, //posisi awal y
+                        }, {
+                            text: this.Auth.auth.name,
+                            color: '#000000',
+                            size: 5,
+                            //x_append: -150,
+                            //x: 150, //jika x terdefinisi, x_append akan dihiraukan
+                            y: 900, //posisi awal y
+                        }, {
+                            text: this.Module.build.grade ? this.Module.build.grade.description : null,
+                            color: '#000000',
+                            size: 8,
+                            x_append: 400,
+                            y: 20, //posisi awal y
+                        }];
+                        this.Module.build.canvas_data.items.forEach((item, i) => {
+                            //console.log(item)
+                            this.sampulMakerItems[i].x = item.x;
+                            this.sampulMakerItems[i].y = item.y;
+                            this.sampulMakerItems[i].fontfamily = item.fontfamily;
+                            this.sampulMakerItems[i].color = item.color;
+                            this.sampulMakerItems[i].size = item.size;
+                        });
+                        //this.$refs.sampulMaker1.setItems(items)
+                        this.$refs.sampulMaker1.initialize().then(res => {
+                            const imageData = this.$refs.sampulMaker1.toDataURL();
+
+                            this.module.canvas_image = imageData;
+                            this.$store.commit("Module/setCanvasImage", {
+                                canvas_image: imageData
+                            });
+                            this.submitModule();
+                        });
 
                     }).onOk(() => {
                         // console.log('>>>> second OK catcher')

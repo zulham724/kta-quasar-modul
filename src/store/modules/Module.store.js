@@ -11,7 +11,10 @@ const state = {
         template_category:null,
         owned_template_category:null,
         subject:null,
-        canvas_data:[],
+        canvas_data:{
+            image:null,
+            items:[]
+        },
         canvas_image:null
     },
     owned:{},
@@ -35,7 +38,10 @@ const mutations = {
             template_category:'',
             owned_template_category:null,
             subject:null,
-            canvas_data:[],
+            canvas_data:{
+                image:null,
+                items:[]
+            },
             canvas_image:null
         }
     },
@@ -101,9 +107,10 @@ const mutations = {
         })]
     },
     setCanvasData(state, payload){
-        state.build.canvas_data = [...payload.canvas_data.map(item=>{
+        state.build.canvas_data.items = [...payload.canvas_data.map(item=>{
             return {...item}
-        })]
+        })];
+        state.build.canvas_data.image = payload.image;
     },
     setCanvasImage(state, payload){
         state.build.canvas_image = payload.canvas_image

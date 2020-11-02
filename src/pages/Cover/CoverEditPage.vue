@@ -147,9 +147,15 @@ export default {
     methods: {
         selectTemplate: function (template) {
             //return;
-            this.$store.commit('ModuleForEdit/setTemplate', {
-                template: template
-            });
+            this.$router.push({
+                name: 'editcoverdesignedit',
+                params: {
+                    selectedImage: template
+                }
+            })
+            // this.$store.commit('ModuleForEdit/setTemplate', {
+            //     template: template
+            // });
             //console.log(this.Module.build.selected_template)
             // this.$router.push({
             //     name: 'create'

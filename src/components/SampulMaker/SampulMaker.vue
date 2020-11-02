@@ -79,6 +79,7 @@ export default {
                 this.containers = [];
                 newVal.forEach((item, item_index) => {
                     this.createText(stage, bitmap, item, item_index, previousContainerData[item_index])
+                    //alert('cok')
                 });
                 // /stage.update();
             },

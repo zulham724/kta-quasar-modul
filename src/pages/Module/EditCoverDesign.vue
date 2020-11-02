@@ -6,6 +6,8 @@
             <q-toolbar-title>
                 <div class="text-body2 text-weight-light" style="font-size:15px">Edit Cover Template</div>
             </q-toolbar-title>
+            <!--<q-btn flat round dense icon="more_vert"></q-btn>-->
+            <q-btn @click="saveCover" flat label="Lanjut"></q-btn>
         </q-toolbar>
     </q-header>
     <q-page class="q-pa-xs">
@@ -39,14 +41,14 @@
 
                 </template>
             </sampul-maker>
-            <q-page-sticky position="bottom-right" :offset="[18, 18]">
+            <!--<q-page-sticky position="bottom-right" :offset="[18, 18]">
                 <div class="row q-mb-sm">
                     <q-btn fab icon="save" @click="saveCover" color="primary" />
                 </div>
                 <div class="row">
                     <q-btn fab icon="replay" @click="resetCover" color="warning" />
                 </div>
-            </q-page-sticky>
+            </q-page-sticky>-->
             <!--<sampul-maker></sampul-maker>-->
         </div>
 
@@ -65,6 +67,7 @@ import {
 } from 'quasar'
 // import CreateMessage from "components/CreateModul/EditModul";
 export default {
+    props: ['selectedImage'],
     components: {
         'SampulMaker': SampulMaker
     },
@@ -82,19 +85,22 @@ export default {
 
     },
     mounted() {
-        //alert(this.img)
+        //alert(this.selectedImage)
+
         if (this.img) this.$refs.myCanvas.initialize();
 
         //console.log()
     },
     created: function () {
 
-        if (!this.Module.build.selected_template) {
+        //if (!this.Module.build.selected_template) {
+        if (!this.selectedImage) {
             this.$q.notify('Silahkan pilih template')
-            return this.$router.push('/create')
+            return this.$router.push('/create/cover')
         }
+        this.img = `${this.Setting.storageUrl}/${this.selectedImage.image}`
 
-        this.img = this.Module.build.selected_template ? `${this.Setting.storageUrl}/${this.Module.build.selected_template.image}` : null; //img HARUS taruh di created (sebelum DOM dirender)
+        //this.img = this.Module.build.selected_template ? `${this.Setting.storageUrl}/${this.Module.build.selected_template.image}` : null; //img HARUS taruh di created (sebelum DOM dirender)
         var d = new Date();
         this.items.push({
             text: this.Module.build.name,
@@ -102,11 +108,13 @@ export default {
             size: 7,
             //x_append: -100, //posisi x_center ditambah dgn x_append
             y: 200, //posisi awal y
+            fontfamily: 'Arial'
         }, {
             text: this.Module.build.subject,
             color: '#000000',
             size: 8,
             y: 700, //posisi awal y
+            fontfamily: 'Arial'
         }, {
             text: d.getFullYear(),
             color: '#000000',
@@ -114,6 +122,7 @@ export default {
             //x_append: -150,
             x: 150, //jika x terdefinisi, x_append akan dihiraukan
             y: 20, //posisi awal y
+            fontfamily: 'Arial'
         }, {
             text: this.Auth.auth.name,
             color: '#000000',
@@ -121,18 +130,21 @@ export default {
             //x_append: -150,
             //x: 150, //jika x terdefinisi, x_append akan dihiraukan
             y: 900, //posisi awal y
+            fontfamily: 'Arial'
         }, {
             text: this.Module.build.grade ? this.Module.build.grade.description : null,
             color: '#000000',
             size: 8,
             x_append: 400,
             y: 20, //posisi awal y
+            fontfamily: 'Arial'
         });
 
-        this.Module.build.canvas_data.forEach((item, i) => {
+        this.Module.build.canvas_data.items.forEach((item, i) => {
             console.log(item)
             this.items[i].x = item.x;
             this.items[i].y = item.y;
+            this.items[i].fontfamily = item.fontfamily;
             this.items[i].color = item.color;
             this.items[i].size = item.size;
         });
@@ -165,25 +177,32 @@ export default {
     },
     methods: {
         saveCover() {
-            console.log(this.$refs.myCanvas.toDataURL());
+            //console.log(this.$refs.myCanvas.toDataURL());
+            this.$store.commit('Module/setSelectedTemplate', {
+                selected_template: this.selectedImage
+            });
+
             let canvas_data = [];
             //console.log(this.items)
             this.$refs.myCanvas.getContainers().forEach(container => {
                 canvas_data.push({
                     x: container.x,
                     y: container.y,
+                    fontfamily: this.items[container.index].fontfamily,
                     color: this.items[container.index].color,
                     size: this.items[container.index].size,
                     //color:container.
                 })
             });
             this.$store.commit("Module/setCanvasData", {
-                canvas_data: canvas_data
+                canvas_data: canvas_data,
+                image: this.Module.build.selected_template.image
             });
             this.$store.commit("Module/setCanvasImage", {
                 canvas_image: this.$refs.myCanvas.toDataURL()
             });
             //console.log(this.Module.build.canvas_data)
+            this.$router.push('/create');
 
         },
         resetCover() {

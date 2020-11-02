@@ -25,7 +25,14 @@ const routes = [
           {
             path: "/editcoverdesign",
             name: "editcoverdesign",
-            component: () => import("pages/EditCoverDesign.vue")
+            component: () => import("pages/Module/EditCoverDesign.vue"),
+            props:true,
+          },
+          {
+            path: "/edit/editcoverdesign",
+            name: "editcoverdesignedit",
+            component: () => import("pages/ModuleForEdit/EditCoverDesign.vue"),
+            props:true,
           },
           {
             path: "/create",
