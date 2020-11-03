@@ -4,7 +4,7 @@
         <div class="text-h5 q-pt-sm" style="color:#CC3636;">PAI</div>
         <div class="text-h4 text-weight-medium" style="color:#8C2121;">Modul Digital</div>
         <div style="width:75%; height:50%">
-            <q-input outlined dense rounded color="red-10" class="q-pt-md" style="height:50%" label="Cari Modul">
+            <q-input disable outlined dense rounded color="red-10" class="q-pt-md" style="height:50%" label="Cari Modul">
                 <template v-slot:append>
                     <q-icon />
                     <q-icon name="search" />
@@ -16,7 +16,7 @@
                 Terbaru
             </q-item-section>
             <q-item-section side>
-                <q-btn rounded no-caps flat dense style="font-size:14px;background-color:#840000;color:white" class="q-px-md text-weight-regular" label="See All" @click="$router.push('/category/newest')">
+                <q-btn rounded no-caps flat dense style="font-size:14px;background-color:#840000;color:white" class="q-px-md text-weight-regular" disable label="See All" @click="$router.push('/category/newest')">
                 </q-btn>
             </q-item-section>
         </q-item>

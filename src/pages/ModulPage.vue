@@ -9,7 +9,7 @@
             <q-btn color="white" round flat icon="more_vert">
                 <q-menu>
                     <q-list style="width:150px;border:2px solid #840000">
-                        <q-item clickable class="q-pt-none q-pb-none">
+                        <!--<q-item clickable class="q-pt-none q-pb-none">
                             <q-item-section>
                                 <div clickable @click="$router.push('/modul/review')">
                                     <span class="material-icons" style="padding-right:6px">
@@ -18,7 +18,7 @@
                                     Lihat Penilai
                                 </div>
                             </q-item-section>
-                        </q-item>
+                        </q-item>-->
                         <q-item clickable class="q-pt-none q-pb-none">
                             <q-item-section v-if="module.user.id==Auth.auth.id">
                                 <div clickable @click="$router.push('/edit/'+moduleId)">
@@ -29,7 +29,7 @@
                                 </div>
                             </q-item-section>
                         </q-item>
-                        <q-item clickable class="q-pt-none q-pb-none">
+                        <q-item disable clickable class="q-pt-none q-pb-none">
                             <q-item-section>
                                 <div>
                                     <span class="material-icons" style="padding-right:6px">
@@ -56,12 +56,12 @@
                     {{module.name}}
                 </div>
             </div>
-            <div class="text-center q-py-none " style="color:#F2C94C;font-size:16px">
+            <!--            <div class="text-center q-py-none " style="color:#F2C94C;font-size:16px">
                 <span class="q-pb-sm material-icons" style="font-size:24px;padding-right:5px">
                     star
                 </span>
                 <span style="font-size:22px"><b>90</b></span>/100
-            </div>
+            </div>-->
         </div>
         <div class="col">
             <div class="q-px-md q-pb-lg q-pt-xs" style="background-color:white;
@@ -106,7 +106,7 @@
                             <q-item class="full-width q-pa-none">
                                 <q-item-section avatar>
                                     <q-avatar rounded size="20vw">
-                                        <img :src="`${Setting.storageUrl}/${module.user.avatar}`" />
+                                        <img v-if="module.user.avatar" :src="`${Setting.storageUrl}/${module.user.avatar}`" />
                                     </q-avatar>
                                 </q-item-section>
                                 <q-item-section>

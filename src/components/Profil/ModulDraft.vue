@@ -2,7 +2,7 @@
 <div>
     <q-item class="q-pa-sm" style="background-color:white;
       border-radius:10px">
-        <q-item-section avatar top style="padding-right:10px" clickable @click="$router.push('/modul')">
+        <q-item-section avatar top style="padding-right:10px" clickable @click="$router.push('/edit/'+module.id)">
             <q-avatar square size="25vw">
                 <img :src="`${Setting.storageUrl}/${module.template.image}`" style="width:80%; transform: scale(1,1)" />
             </q-avatar>
@@ -29,7 +29,7 @@
                                 </div>
                             </q-item-section>
                         </q-item>
-                        <q-item clickable class="q-py-none" style="border-top:1px solid grey;
+                        <!--<q-item clickable class="q-py-none" style="border-top:1px solid grey;
                   background-color:#E0E0E0">
                             <q-item-section>
                                 <div>
@@ -50,7 +50,7 @@
                                     Publish
                                 </div>
                             </q-item-section>
-                        </q-item>
+                        </q-item>-->
                     </q-list>
                 </q-menu>
             </q-btn>

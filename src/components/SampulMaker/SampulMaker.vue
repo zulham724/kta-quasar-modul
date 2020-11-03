@@ -182,7 +182,7 @@ export default {
                     //stage.update();
                     console.log('END initialize sampul maker')
                     this.isInitialized = true;
-                    resolve(isLoaded)
+                    resolve(this.stage)
                 }
                 img.crossOrigin = "Anonymous"
                 img.src = this.image;
@@ -327,9 +327,11 @@ export default {
             return this.loading;
         },
         setImage(img) {
+            this.isInitialized = false;
             this.image = img;
         },
         setItems(items) {
+            this.isInitialized = false;
             this.itemsData = items
         }
     },

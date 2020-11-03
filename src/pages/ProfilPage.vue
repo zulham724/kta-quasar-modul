@@ -8,6 +8,23 @@
                         Profil
                     </div>
                 </q-toolbar-title>
+                <q-btn color="white" round flat icon="more_vert">
+                    <q-menu>
+                        <q-list style="width:150px;border:2px solid #840000">
+                            <q-item clickable class="q-pt-none q-pb-none">
+                                <q-item-section>
+                                    <div clickable @click="onLogout">
+                                        <span class="material-icons" style="padding-right:6px">
+                                            logout
+                                        </span>
+                                        Log Out
+                                    </div>
+                                </q-item-section>
+                            </q-item>
+
+                        </q-list>
+                    </q-menu>
+                </q-btn>
                 <!-- <q-btn color="white" round flat icon="more_vert">
           <q-menu> </q-menu>
         </q-btn> -->
@@ -154,7 +171,12 @@ export default {
             ]).then(() => {
                 done();
             })
-        }
+        },
+        onLogout() {
+            this.$router.push("/login").then(() => {
+                this.$store.dispatch("Auth/logout");
+            });
+        },
     },
     created: function () {
         if (this.Module.modules_count === null) {

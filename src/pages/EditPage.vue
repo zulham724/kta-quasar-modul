@@ -82,10 +82,10 @@
                 </q-card>
                 <q-item class="q-px-sm" style="padding-top:0px">
                     <q-item-section class="q-pr-sm">
-                        <q-btn @click="submitModule(0)" :disable="loading" rounded color="grey" label="Simpan"></q-btn>
+                        <q-btn @click="checkAndSubmitModule(0)" :disable="loading" rounded color="grey" label="Simpan"></q-btn>
                     </q-item-section>
                     <q-item-section class="q-pl-sm">
-                        <q-btn rounded @click="submitModule(1)" :disable="loading" style="color:white;background-color:#840000" label="Publish"></q-btn>
+                        <q-btn rounded @click="checkAndSubmitModule(1)" :disable="loading" style="color:white;background-color:#840000" label="Publish"></q-btn>
                     </q-item-section>
                 </q-item>
             </q-form>
@@ -106,7 +106,7 @@
         </q-dialog>
     </q-page>
 
-    <sampul-maker :items="sampulMakerItems" v-show="false" ref="sampulMaker2"></sampul-maker>
+    <sampul-maker v-show="false" ref="sampulMaker2"></sampul-maker>
 </div>
 </template>
 
@@ -267,6 +267,10 @@ export default {
             this.$store.dispatch('Module/show', {
                 module_id: moduleId
             }).then(res => {
+
+                if (!res.data.template) {
+
+                }
                 /*
                 Set ID modul pada store Module ke ID yang dipilih saat ini
                 */
@@ -277,9 +281,14 @@ export default {
                 console.log(res.data)
 
                 const canvasData = JSON.parse(res.data.canvas_data);
+
                 this.module = {
                     ...res.data,
-                    canvas_image: res.data.template.image,
+                    canvas_image: res.data.template ? res.data.template.image : null,
+                    canvas_data: {
+                        items: canvasData.items,
+                        image: canvasData.image
+                    },
                     template: {
                         image: canvasData.image,
                         name: canvasData.name
@@ -311,19 +320,27 @@ export default {
                     text: this.module.grade ? this.module.grade.description : null,
 
                 }];
-                ///////////////////////////////
-                //section untuk render canvas//
-                this.$refs.sampulMaker2.setImage(`${this.Setting.storageUrl}/${canvasData.image}`);
                 canvasData.items.forEach((item, i) => {
                     this.sampulMakerItems[i].y = item.y;
-                    this.sampulMakerItems[i].x = item.x ? item.x : 0;
+                    this.sampulMakerItems[i].x = item.x;
                     this.sampulMakerItems[i].fontfamily = item.fontfamily ? item.fontfamily : 'Arial';
                     this.sampulMakerItems[i].color = item.color;
                     this.sampulMakerItems[i].size = item.size;
                 });
+
+                this.$store.commit('ModuleForEdit/setCanvasData', {
+                    canvas_data: canvasData.items,
+                    image: canvasData.image
+                });
+
+                ///////////////////////////////
+                //section untuk render canvas//
+                this.$refs.sampulMaker2.setImage(`${this.Setting.storageUrl}/${canvasData.image}`);
+                this.$refs.sampulMaker2.setItems(this.sampulMakerItems);
+
                 this.$refs.sampulMaker2.initialize().then(res => {
-                    const imageData = this.$refs.sampulMaker2.toDataURL();
-                    console.log(imageData)
+                    const imageData = res.toDataURL();
+                    //console.log(imageData)
                     this.module.canvas_image = imageData;
                     this.$store.commit("ModuleForEdit/setCanvasImage", {
                         canvas_image: imageData
@@ -348,7 +365,7 @@ export default {
             //this.getModuleData(this.ModuleForEdit.build.module_id)
             this.cloneModuleFromStore();
         },
-        submitModule(is_publish) {
+        checkAndSubmitModule(is_publish) {
             this.$refs.myForm.validate().then(success => {
                 if (success) {
                     this.$q.dialog({
@@ -357,24 +374,71 @@ export default {
                         cancel: true,
                         persistent: true
                     }).onOk(() => {
-                        // console.log('>>>> OK')
                         this.loading = true;
-                        this.module.is_publish = is_publish
+                        this.module.is_publish = is_publish;
 
-                        this.$store.dispatch("ModuleForEdit/store", this.module).then(res => {
-                            this.$store.commit('ModuleForEdit/resetBuild');
-                            this.$q.notify(is_publish ? 'Berhasil menerbitkan modul' : 'Berhasil menyimpan modul')
-                            if (is_publish) this.$store.dispatch("Module/getPublishedModules");
-                            this.$router.push('/');
-                        }).catch(err => {
-                            console.log(err.response);
-                            //return;
-                            if (err.response.data.errors.template) {
-                                this.$q.notify('Sampul modul harus dipilih');
-                            }
-                        }).finally(() => {
-                            this.loading = false;
+                        //Jika user tidak memilih template, maka template default akan diambil dengan SampulMaker.vue
+                        let image = `${this.Setting.storageUrl}/${this.ModuleForEdit.build.template.image}`;
+                        this.sampulMaker = true;
+                        // if (this.ModuleForEdit.build.canvas_image == null) {
+                        //     image = `${this.Setting.storageUrl}/${this.Module.build.selected_template.image}`;
+                        // } else {
+                        //     //console.log(`${this.Setting.storageUrl}/${this.Module.build.selected_template.image}`);
+                        //     image = `${this.Setting.storageUrl}/${this.Module.build.selected_template.image}`;
+                        // }
+                        var d = new Date();
+                        this.sampulMakerItems = [{
+                            text: this.ModuleForEdit.build.name,
+                            color: '#000000',
+                            size: 7,
+                            //x_append: -100, //posisi x_center ditambah dgn x_append
+                            y: 200, //posisi awal y
+                        }, {
+                            text: this.ModuleForEdit.build.subject,
+                            color: '#000000',
+                            size: 8,
+                            y: 700, //posisi awal y
+                        }, {
+                            text: d.getFullYear(),
+                            color: '#000000',
+                            size: 8,
+                            //x_append: -150,
+                            x: 150, //jika x terdefinisi, x_append akan dihiraukan
+                            y: 20, //posisi awal y
+                        }, {
+                            text: this.Auth.auth.name,
+                            color: '#000000',
+                            size: 5,
+                            //x_append: -150,
+                            //x: 150, //jika x terdefinisi, x_append akan dihiraukan
+                            y: 900, //posisi awal y
+                        }, {
+                            text: this.ModuleForEdit.build.grade ? this.ModuleForEdit.build.grade.description : null,
+                            color: '#000000',
+                            size: 8,
+                            x_append: 400,
+                            y: 20, //posisi awal y
+                        }];
+                        this.ModuleForEdit.build.canvas_data.items.forEach((item, i) => {
+                            //console.log(item)
+                            this.sampulMakerItems[i].x = item.x;
+                            this.sampulMakerItems[i].y = item.y;
+                            this.sampulMakerItems[i].fontfamily = item.fontfamily;
+                            this.sampulMakerItems[i].color = item.color;
+                            this.sampulMakerItems[i].size = item.size;
                         });
+                        this.$refs.sampulMaker2.setImage(image);
+                        this.$refs.sampulMaker2.setItems(this.sampulMakerItems)
+                        this.$refs.sampulMaker2.initialize().then(res => {
+                            const imageData = res.toDataURL();
+                            //console.log(imageData)
+                            this.module.canvas_image = imageData;
+                            this.$store.commit("ModuleForEdit/setCanvasImage", {
+                                canvas_image: imageData
+                            });
+                            this.submitModule();
+                        });
+
                     }).onOk(() => {
                         // console.log('>>>> second OK catcher')
                     }).onCancel(() => {
@@ -384,6 +448,25 @@ export default {
                     })
                 }
             })
+
+        },
+        submitModule(is_publish) {
+            // console.log(this.module);
+            // return;
+            this.$store.dispatch("ModuleForEdit/store", this.module).then(res => {
+                this.$store.commit('ModuleForEdit/resetBuild');
+                this.$q.notify(is_publish ? 'Berhasil mengedit publish modul' : 'Berhasil mengedit draft modul')
+                //if (is_publish) this.$store.dispatch("Module/getPublishedModules");
+                this.$router.push('/modul/' + this.moduleId);
+            }).catch(err => {
+                console.log(err.response);
+                //return;
+                if (err.response.data.errors.template) {
+                    this.$q.notify('Sampul modul harus dipilih');
+                }
+            }).finally(() => {
+                this.loading = false;
+            });
 
         },
         addContent() {

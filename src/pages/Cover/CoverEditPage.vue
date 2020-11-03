@@ -147,6 +147,9 @@ export default {
     methods: {
         selectTemplate: function (template) {
             //return;
+            this.$store.commit('ModuleForEdit/setTemplate', {
+                template: template
+            });
             this.$router.push({
                 name: 'editcoverdesignedit',
                 params: {

@@ -169,8 +169,7 @@ export default {
             // });
 
             let canvas_data = [];
-            console.log('container')
-            console.log(this.$refs.myCanvas.getContainers())
+
             this.$refs.myCanvas.getContainers().forEach(container => {
                 console.log(container.index)
                 canvas_data.push({

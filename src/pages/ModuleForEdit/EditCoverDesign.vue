@@ -18,7 +18,7 @@
         </div>
         <div class="row justify-center q-mb-md">
 
-            <sampul-maker :configs="[{name:'size'},{name:'fontfamily'},{name:'color'}]" :img="img" :items="items" ref="myCanvas">
+            <sampul-maker :configs="[{name:'size'},{name:'fontfamily'},{name:'color'}]" ref="myCanvas">
                 <!--<template v-slot:between>
                     <div class="row justify-between">
                         <q-btn fab icon="save" @click="saveCover" color="primary" label="Simpan" />
@@ -87,7 +87,15 @@ export default {
     mounted() {
         //alert(this.selectedImage)
 
-        if (this.img) this.$refs.myCanvas.initialize();
+        if (!this.img) return;
+        this.loading = true;
+        this.$refs.myCanvas.setImage(this.img);
+        this.$refs.myCanvas.setItems(this.items);
+        this.$refs.myCanvas.initialize().then(res => {
+            this.loading = false;
+            //this.$refs.myCanvas.toDataURL();
+        });
+        console.log('mounted')
 
         //console.log()
     },
@@ -148,39 +156,19 @@ export default {
             this.items[i].color = item.color;
             this.items[i].size = item.size;
         });
-        // this.template = {
-        //     ...this.Module.build.selected_template,
-        //     canvas_data: {
-        //         ...this.Module.build.selected_template.canvas_data
-        //     }
-        // }
+        console.log('created')
+        console.log(this.items)
 
     },
     watch: {
-        // 'template.canvas_data': {
-        //     handler: function (newVal, oldVal) {
-        //         this.$store.commit("Module/setTemplateCanvas", {
-        //             data: newVal
-        //         });
-        //         console.log('cok')
-        //         console.log(newVal)
-        //     },
-        //     deep: true
-        // },
-        // items: {
-        //     handler: function (newVal, oldVal) {
-        //         console.log(newVal)
-        //     },
-        //     deep: true
-        // }
 
     },
     methods: {
         saveCover() {
             //console.log(this.$refs.myCanvas.toDataURL());
-            this.$store.commit('Module/setTemplate', {
-                template: this.selectedImage
-            });
+            // this.$store.commit('Module/setTemplate', {
+            //     template: this.selectedImage
+            // });
 
             let canvas_data = [];
             //console.log(this.items)
@@ -196,13 +184,13 @@ export default {
             });
             this.$store.commit("ModuleForEdit/setCanvasData", {
                 canvas_data: canvas_data,
-                image: this.Module.build.selected_template.image
+                image: this.ModuleForEdit.build.template.image
             });
             this.$store.commit("ModuleForEdit/setCanvasImage", {
                 canvas_image: this.$refs.myCanvas.toDataURL()
             });
             //console.log(this.Module.build.canvas_data)
-            this.$router.push('/modul/' + this.ModuleForEdit.build.module_id);
+            this.$router.push('/edit/' + this.ModuleForEdit.build.module_id);
 
         },
         resetCover() {

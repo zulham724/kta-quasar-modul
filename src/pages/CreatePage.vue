@@ -260,14 +260,8 @@ export default {
                         this.module.is_publish = is_publish
 
                         //Jika user tidak memilih template, maka template default akan diambil dengan SampulMaker.vue
-                        let image = '';
-                        this.sampulMaker = true;
-                        if (this.Module.build.canvas_image == null) {
-                            image = `${this.Setting.storageUrl}/${this.Module.build.selected_template.image}`;
-                        } else {
-                            //console.log(`${this.Setting.storageUrl}/${this.Module.build.selected_template.image}`);
-                            image = `${this.Setting.storageUrl}/${this.Module.build.selected_template.image}`;
-                        }
+                        let image = `${this.Setting.storageUrl}/${this.Module.build.selected_template.image}`;
+
                         var d = new Date();
                         this.sampulMakerItems = [{
                             text: this.Module.build.name,
