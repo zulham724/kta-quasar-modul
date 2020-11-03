@@ -3,7 +3,7 @@
     <slot name="loading" v-if="loading"></slot>
     <canvas id="myCanvas" style="width:100%"></canvas>
     <slot name="between"></slot>
-    <div v-for="(item, n) in items" :key="n">
+    <div v-for="(item, n) in itemsData" :key="n">
         <div v-if="selectedContainer && selectedContainer.index==n">
             <div v-for="(config, i) in configs" :key="i">
                 <div>
@@ -27,7 +27,7 @@ import {
     Text,
     Touch
 } from "@createjs/easeljs";
-var stage, bitmap, isLoaded = false;
+var isLoaded = false;
 export default {
     props: {
         items: Array,
@@ -57,72 +57,95 @@ export default {
         }
     },
     created() {
+        this.stage = this.bitmap = null;
+        isLoaded = false;
         this.image = this.img;
+        if (this.items) {
+            this.itemsData = items
+        }
     },
     watch: {
-        items: {
+        itemsData: {
             handler: function (newVal, oldVal) {
-                if (!bitmap.getTransformedBounds()) return;
+                if (!this.isInitialized) return;
+                if (!this.bitmap.getTransformedBounds()) return;
+                console.log('new');
+                console.log(newVal);
+                console.log('old');
+                console.log(oldVal);
+                console.log(this.containers);
+                console.log(this.bitmap)
                 //if (!bitmap) return;
 
                 let previousContainerData = [];
                 let removedChildIndex = [];
-                for (let i = 1; i < stage.numChildren; i++) {
+                for (let i = 1; i < this.stage.numChildren; i++) {
                     previousContainerData.push({
-                        x: stage.getChildAt(i).x,
-                        y: stage.getChildAt(i).y
+                        x: this.stage.getChildAt(i).x,
+                        y: this.stage.getChildAt(i).y
                     });
                     removedChildIndex.push(i)
                     //previousContainerData.y=stage.getChildAt(i).y;
                 }
                 //console.log(previousContainerData);
-                stage.removeAllEventListeners();
-                stage.removeChildAt(...removedChildIndex)
+                this.stage.removeAllEventListeners();
+                this.stage.removeChildAt(...removedChildIndex)
+                //alert('hapus')
                 this.containers = [];
                 newVal.forEach((item, item_index) => {
-                    this.createText(stage, bitmap, item, item_index, previousContainerData[item_index])
+                    // if (item.text) item.text = item.text.toString();
+                    // else item.text = '';
+                    this.createText(this.stage, this.bitmap, item, item_index, previousContainerData[item_index])
+                    console.log('watch ' + item_index)
                     //alert('cok')
                 });
-                // /stage.update();
+                this.stage.update();
             },
             deep: true
         }
     },
     data() {
         return {
+            isInitialized: false,
+            stage: null,
+            bitmap: null,
             image: null,
             containers: [],
             selectedContainer: null,
             loading: false,
+            itemsData: [],
 
         }
     },
     mounted() {
         //console.log(this.configs)
+        console.log('mounted sampul maker BEGIN')
+        console.log(this.itemsData)
         if (!this.isMounted) return;
         this.loading = true;
 
-        stage = new Stage("myCanvas");
-        Touch.enable(stage);
+        this.stage = new Stage("myCanvas");
+        Touch.enable(this.stage);
         //        createjs.Touch.enable(stage);
         //stage.mouseMoveOutside = true;
-        var img = new Image;
-        bitmap = new Bitmap(img);
+        let img = new Image;
+        this.bitmap = new Bitmap(img);
         img.onload = () => {
-            bitmap.setTransform(0, 0, 1, 1);
+            this.bitmap.setTransform(0, 0, 1, 1);
             //stage section
-            stage.addChild(bitmap);
-            stage.canvas.width = bitmap.getTransformedBounds().width;
-            stage.canvas.height = bitmap.getTransformedBounds().height;
+            this.stage.addChild(this.bitmap);
+            this.stage.canvas.width = this.bitmap.getTransformedBounds().width;
+            this.stage.canvas.height = this.bitmap.getTransformedBounds().height;
 
             //section buat text & rect
-            this.items.forEach((item, item_index) => {
-                if (item.text) item.text = item.text.toString();
-                else item.text = '';
-                this.createText(stage, bitmap, item, item_index)
+            this.itemsData.forEach((item, item_index) => {
+                // if (item.text) item.text = item.text.toString();
+                // else item.text = '';
+                this.createText(this.stage, this.bitmap, item, item_index)
             });
             isLoaded = img.complete && img.naturalHeight !== 0;
-            //stage.update();
+            this.stage.update();
+            console.log('mounted sampul maker END')
 
         }
         img.crossOrigin = "Anonymous"
@@ -130,53 +153,61 @@ export default {
     },
     methods: {
         initialize() {
+            console.log('BEGIN initialize sampul maker')
             return new Promise((resolve, reject) => {
                 this.loading = true;
-                stage = new Stage("myCanvas");
-                Touch.enable(stage);
-                var img = new Image;
-                bitmap = new Bitmap(img);
+                this.stage = new Stage("myCanvas");
+                Touch.enable(this.stage);
+                let img = new Image;
+                this.bitmap = new Bitmap(img);
+
                 img.onload = () => {
-                    bitmap.setTransform(0, 0, 1, 1);
+                    this.bitmap.setTransform(0, 0, 1, 1);
                     //stage section
-                    stage.addChild(bitmap);
-                    stage.canvas.width = bitmap.getTransformedBounds().width;
-                    stage.canvas.height = bitmap.getTransformedBounds().height;
+                    this.stage.addChild(this.bitmap);
+
+                    this.stage.canvas.width = this.bitmap.getTransformedBounds().width;
+                    this.stage.canvas.height = this.bitmap.getTransformedBounds().height;
 
                     //section buat text & rect
-                    this.items.forEach((item, item_index) => {
-                        if (item.text) item.text = item.text.toString();
-                        else item.text = '';
-                        this.createText(stage, bitmap, item, item_index)
+                    this.containers = [];
+                    this.itemsData.forEach((item, item_index) => {
+
+                        this.createText(this.stage, this.bitmap, item, item_index)
+                        console.log('initialize ' + item_index)
                     });
+
                     isLoaded = img.complete && img.naturalHeight !== 0;
                     this.loading = false;
-                    resolve(isLoaded)
                     //stage.update();
+                    console.log('END initialize sampul maker')
+                    this.isInitialized = true;
+                    resolve(isLoaded)
                 }
                 img.crossOrigin = "Anonymous"
                 img.src = this.image;
+                //console.log('img src ' + this.image)
             })
         },
         resetContainers() {
             let removedChildIndex = [];
-            for (let i = 1; i < stage.numChildren; i++) {
+            for (let i = 1; i < this.stage.numChildren; i++) {
                 removedChildIndex.push(i)
             }
-            stage.removeAllEventListeners();
-            stage.removeChildAt(...removedChildIndex)
+            this.stage.removeAllEventListeners();
+            this.stage.removeChildAt(...removedChildIndex)
             this.containers = [];
         },
         //merefresh canvas jika data items berubah
         refreshCanvas() {
             this.resetContainers();
-            this.items.forEach((item, item_index) => {
-                this.createText(stage, bitmap, item, item_index)
+            this.itemsData.forEach((item, item_index) => {
+                this.createText(this.stage, this.bitmap, item, item_index)
             });
         },
         createText: function (stage, bitmap, objText, objTextIndex, containerData = {}) {
             let fontsize1 = bitmap.getTransformedBounds().width / (10 * (10 / objText.size));
-            console.log('fontsize: ' + fontsize1)
+            //console.log('fontsize: ' + fontsize1)
             let x;
             if (!objText.x) {
                 let x_center = bitmap.getTransformedBounds().width / 2;
@@ -213,7 +244,7 @@ export default {
                 stage.update();
             });
             container.on("mousedown", (evt) => {
-                console.log(container.index)
+                //console.log(container.index)
                 this.containers.forEach(item => {
                     item.getChildAt(0).alpha = 0.01;
                 });
@@ -235,7 +266,7 @@ export default {
             rect.alpha = alpha;
             const x = -1 * (maxTextWidth / 2)
             //alert(maxTextWidth)
-            console.log('maxTextWidth: ' + maxTextWidth)
+            //console.log('maxTextWidth: ' + maxTextWidth)
             rect.graphics.beginFill("rgb(255,255,255)").drawRect(x, 0, maxTextWidth, objLineArray.length * fontsize);
             this.rect = {
                 x: x
@@ -244,7 +275,7 @@ export default {
         },
         wrapText: function (stage, objText, x, y, maxWidth, lineHeight, fontsize = 100) {
             let objLineArray = [];
-            let text = objText.text.replace(/\s\s+/g, ' '); //hapus semua double spasi/tab menjadi 1 spasi
+            let text = objText.text ? objText.text.toString().replace(/\s\s+/g, ' ') : ''; //hapus semua double spasi/tab menjadi 1 spasi
             var words = text.split(' ');
             var line = '';
             var objLine;
@@ -287,10 +318,10 @@ export default {
             return this.containers;
         },
         getItems() {
-            return this.items;
+            return this.itemsData;
         },
         toDataURL() {
-            return stage.toDataURL();
+            return this.stage.toDataURL();
         },
         isLoading() {
             return this.loading;
@@ -299,7 +330,7 @@ export default {
             this.image = img;
         },
         setItems(items) {
-            this.items = items;
+            this.itemsData = items
         }
     },
 }

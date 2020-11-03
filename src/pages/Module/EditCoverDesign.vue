@@ -18,7 +18,7 @@
         </div>
         <div class="row justify-center q-mb-md">
 
-            <sampul-maker :configs="[{name:'size'},{name:'fontfamily'},{name:'color'}]" :img="img" :items="items" ref="myCanvas">
+            <sampul-maker :configs="[{name:'size'},{name:'fontfamily'},{name:'color'}]" ref="myCanvas">
                 <template v-slot:loading>
                     <div class="row justify-center q-my-md">
                         <q-spinner-dots color="primary" size="40px" />
@@ -84,11 +84,15 @@ export default {
 
     },
     mounted() {
-
+        if (!this.img) return;
         this.loading = true;
-        if (this.img) this.$refs.myCanvas.initialize().then(res => {
+        this.$refs.myCanvas.setImage(this.img);
+        this.$refs.myCanvas.setItems(this.items);
+        this.$refs.myCanvas.initialize().then(res => {
             this.loading = false;
+            //this.$refs.myCanvas.toDataURL();
         });
+        console.log('mounted')
 
         //console.log()
     },
@@ -99,11 +103,12 @@ export default {
             this.$q.notify('Silahkan pilih template')
             return this.$router.push('/create/cover')
         }
+        //console.log(this.selectedImage)
         this.img = `${this.Setting.storageUrl}/${this.selectedImage.image}`
 
         //this.img = this.Module.build.selected_template ? `${this.Setting.storageUrl}/${this.Module.build.selected_template.image}` : null; //img HARUS taruh di created (sebelum DOM dirender)
         var d = new Date();
-        this.items.push({
+        this.items = [{
             text: this.Module.build.name,
             color: '#000000',
             size: 7,
@@ -139,53 +144,35 @@ export default {
             x_append: 400,
             y: 20, //posisi awal y
             fontfamily: 'Arial'
-        });
+        }];
 
+        //alert(this.Module.build.canvas_data.items)
+        //console.log(this.Module.build.canvas_data.items)
         this.Module.build.canvas_data.items.forEach((item, i) => {
-            console.log(item)
+            //console.log(item)
             this.items[i].x = item.x;
             this.items[i].y = item.y;
-            this.items[i].fontfamily = item.fontfamily;
+            this.items[i].fontfamily = item.fontfamily ? item.fontfamily : 'Arial';
             this.items[i].color = item.color;
             this.items[i].size = item.size;
         });
-        // this.template = {
-        //     ...this.Module.build.selected_template,
-        //     canvas_data: {
-        //         ...this.Module.build.selected_template.canvas_data
-        //     }
-        // }
+        console.log('created')
+        console.log(this.items)
 
     },
-    watch: {
-        // 'template.canvas_data': {
-        //     handler: function (newVal, oldVal) {
-        //         this.$store.commit("Module/setTemplateCanvas", {
-        //             data: newVal
-        //         });
-        //         console.log('cok')
-        //         console.log(newVal)
-        //     },
-        //     deep: true
-        // },
-        // items: {
-        //     handler: function (newVal, oldVal) {
-        //         console.log(newVal)
-        //     },
-        //     deep: true
-        // }
 
-    },
     methods: {
         saveCover() {
             //console.log(this.$refs.myCanvas.toDataURL());
-            this.$store.commit('Module/setSelectedTemplate', {
-                selected_template: this.selectedImage
-            });
+            // this.$store.commit('Module/setSelectedTemplate', {
+            //     selected_template: this.selectedImage
+            // });
 
             let canvas_data = [];
-            //console.log(this.items)
+            console.log('container')
+            console.log(this.$refs.myCanvas.getContainers())
             this.$refs.myCanvas.getContainers().forEach(container => {
+                console.log(container.index)
                 canvas_data.push({
                     x: container.x,
                     y: container.y,
@@ -195,6 +182,8 @@ export default {
                     //color:container.
                 })
             });
+            //console.log('canvas data');
+            //console.log(canvas_data);
             this.$store.commit("Module/setCanvasData", {
                 canvas_data: canvas_data,
                 image: this.Module.build.selected_template.image
@@ -212,24 +201,29 @@ export default {
                 color: '#000000',
                 size: 7,
                 y: 200, //posisi awal y
+                fontfamily: 'Arial'
             }, {
                 color: '#000000',
                 size: 8,
                 y: 700, //posisi awal y
+                fontfamily: 'Arial'
             }, {
                 color: '#000000',
                 size: 8,
                 x: 150, //jika x terdefinisi, x_append akan dihiraukan
                 y: 20, //posisi awal y
+                fontfamily: 'Arial'
             }, {
                 color: '#000000',
                 size: 5,
                 y: 900,
+                fontfamily: 'Arial'
             }, {
                 color: '#000000',
                 size: 8,
                 x_append: 400,
                 y: 20, //posisi awal y
+                fontfamily: 'Arial'
             }];
             default_attr.forEach((item, i) => {
                 this.items[i].x = item.x

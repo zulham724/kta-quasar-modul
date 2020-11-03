@@ -147,15 +147,16 @@ export default {
     methods: {
         selectTemplate: function (template) {
             //return;
+            this.$store.commit('Module/setSelectedTemplate', {
+                selected_template: template
+            });
+
             this.$router.push({
                 name: 'editcoverdesign',
                 params: {
                     selectedImage: template
                 }
             })
-            // this.$store.commit('Module/setSelectedTemplate', {
-            //     selected_template: template
-            // });
 
         }
     }
