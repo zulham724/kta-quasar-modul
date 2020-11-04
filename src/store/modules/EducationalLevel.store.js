@@ -17,7 +17,7 @@ const actions = {
     index({ commit }) {
         return new Promise((resolve, reject) => {
             axios.get(`${this.state.Setting.url}/api/v1/educationallevel`).then(res => {
-                // commit('setEducationalLevels', { educationallevels: res.data })
+                commit('setEducationalLevels', { educationallevels: res.data })
                 resolve(res)
             }).catch(err => {
                 reject(err)

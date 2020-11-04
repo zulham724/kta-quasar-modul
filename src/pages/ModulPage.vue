@@ -9,7 +9,7 @@
             <q-btn color="white" round flat icon="more_vert">
                 <q-menu>
                     <q-list style="width:150px;border:2px solid #840000">
-                        <!--<q-item clickable class="q-pt-none q-pb-none">
+                        <q-item clickable class="q-pt-none q-pb-none">
                             <q-item-section>
                                 <div clickable @click="$router.push('/modul/review')">
                                     <span class="material-icons" style="padding-right:6px">
@@ -18,9 +18,9 @@
                                     Lihat Penilai
                                 </div>
                             </q-item-section>
-                        </q-item>-->
-                        <q-item clickable class="q-pt-none q-pb-none">
-                            <q-item-section v-if="module.user.id==Auth.auth.id">
+                        </q-item>
+                        <q-item v-if="module.user.id==Auth.auth.id" clickable class="q-pt-none q-pb-none">
+                            <q-item-section>
                                 <div clickable @click="$router.push('/edit/'+moduleId)">
                                     <span class="material-icons" style="padding-right:6px">
                                         edit
@@ -29,7 +29,7 @@
                                 </div>
                             </q-item-section>
                         </q-item>
-                        <q-item disable clickable class="q-pt-none q-pb-none">
+                        <q-item clickable class="q-pt-none q-pb-none">
                             <q-item-section>
                                 <div>
                                     <span class="material-icons" style="padding-right:6px">
@@ -274,7 +274,7 @@ export default {
             this.$router.back();
         } else {
             this.loading = true;
-            this.$store.dispatch("Module/show", {
+            this.$store.dispatch("ModulesAll/show", {
                 module_id: this.moduleId
             }).then(res => {
                 this.module = {
@@ -283,6 +283,8 @@ export default {
                 console.log(this.module)
                 this.model = this.module.module_contents.length > 0 ? this.module.module_contents[0] : null
                 this.loading = false;
+            }).catch(err => {
+                this.$router.back('/');
             })
         }
     },

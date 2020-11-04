@@ -4,7 +4,7 @@ const state = {
    
     build: {
         module_id:null,
-        is_publish: true,
+        is_publish: false,
         grade: null,
         name:null,
         description:null,
@@ -79,6 +79,9 @@ const mutations = {
     },
     setSubject(state, payload){
         state.build.subject = payload.subject
+    },
+    setIsPublish(state, payload){
+        state.build.is_publish = payload.is_publish
     },
     setModuleContent(state, payload){
        state.build.module_contents[payload.index].value=payload.value;
@@ -155,9 +158,10 @@ const actions = {
     store({state}, payload){
         return new Promise((resolve, reject) => {
             payload._method="PUT";
+            const module_id=state.build.module_id ? state.build.module_id : payload.id;
             axios
                 .post(
-                    `${this.state.Setting.url}/api/v1/module/${state.build.module_id}`, payload
+                    `${this.state.Setting.url}/api/v1/module/${module_id}`, payload
                 )
                 .then(res => {
                     //commit("set", { items: res.data.grades });

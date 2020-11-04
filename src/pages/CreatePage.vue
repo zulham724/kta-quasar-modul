@@ -244,6 +244,10 @@ export default {
                     this.$q.notify('Sampul modul harus dipilih');
                 }
             }).finally(() => {
+                this.$store.dispatch("Module/getLatestModules")
+                this.$store.dispatch("Module/getModulesCount");
+                this.$store.dispatch("Module/getPublishedModules");
+                this.$store.dispatch("Module/getUnpublishedModules");
                 this.loading = false;
             });
         },
@@ -252,7 +256,7 @@ export default {
                 if (success) {
                     this.$q.dialog({
                         title: 'Konfirmasi',
-                        message: is_publish ? 'Modul akan disimpan dan dipublikasikan ke semua orang' : 'Modul akan disimpan sebagai draft',
+                        message: is_publish ? 'Modul akan disimpan dan dipublikasikan ke semua orang' : 'Modul akan disimpan sebagai draft, tidak bisa dilihat oleh pengguna lain',
                         cancel: true,
                         persistent: true
                     }).onOk(() => {

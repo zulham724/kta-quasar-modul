@@ -29,7 +29,7 @@
                                 </div>
                             </q-item-section>
                         </q-item>
-                        <!--<q-item clickable class="q-py-none" style="border-top:1px solid grey;
+                        <q-item @click="remove" clickable class="q-py-none" style="border-top:1px solid grey;
                   background-color:#E0E0E0">
                             <q-item-section>
                                 <div>
@@ -40,7 +40,7 @@
                                 </div>
                             </q-item-section>
                         </q-item>
-                        <q-item clickable class="q-py-none" style="border-top:1px solid grey;
+                        <q-item @click="publish" clickable class="q-py-none" style="border-top:1px solid grey;
                 background-color:#E0E0E0">
                             <q-item-section>
                                 <div>
@@ -50,7 +50,7 @@
                                     Publish
                                 </div>
                             </q-item-section>
-                        </q-item>-->
+                        </q-item>
                     </q-list>
                 </q-menu>
             </q-btn>
@@ -75,6 +75,62 @@ export default {
         return {
             tab: "modul"
         };
-    }
+
+    },
+    mounted() {
+
+    },
+    methods: {
+        remove() {
+            console.log(this.module)
+            this.$q.dialog({
+                title: 'Konfirmasi',
+                message: 'Hapus draft modul \'' + this.module.subject + '\'?',
+                cancel: true,
+                persistent: true
+            }).onOk(() => {
+                // console.log('>>>> OK')
+                this.$store.dispatch("Module/destroy", {
+                    moduleId: this.module.id
+                }).then(res => {
+                    this.$q.notify('Berhasil menghapus draft modul');
+                    this.$store.dispatch("Module/getUnpublishedModules");
+                    this.$store.dispatch("Module/getModulesCount")
+                })
+
+            }).onOk(() => {
+                // console.log('>>>> second OK catcher')
+            }).onCancel(() => {
+                // console.log('>>>> Cancel')
+            }).onDismiss(() => {
+                // console.log('I am triggered on both OK and Cancel')
+            })
+        },
+        publish() {
+            this.$q.dialog({
+                title: 'Konfirmasi',
+                message: 'Terbitkan modul \'' + this.module.subject + '\'?',
+                cancel: true,
+                persistent: true
+            }).onOk(() => {
+                // console.log('>>>> OK')
+                this.$store.dispatch("ModuleForEdit/store", {
+                    id: this.module.id,
+                    is_publish: true
+                }).then(res => {
+                    this.$store.dispatch("Module/getUnpublishedModules");
+                    this.$store.dispatch("Module/getPublishedModules");
+
+                })
+
+            }).onOk(() => {
+                // console.log('>>>> second OK catcher')
+            }).onCancel(() => {
+                // console.log('>>>> Cancel')
+            }).onDismiss(() => {
+                // console.log('I am triggered on both OK and Cancel')
+            })
+        }
+    },
 }
 </script>

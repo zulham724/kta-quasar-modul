@@ -82,10 +82,12 @@
                 </q-card>
                 <q-item class="q-px-sm" style="padding-top:0px">
                     <q-item-section class="q-pr-sm">
-                        <q-btn @click="checkAndSubmitModule(0)" :disable="loading" rounded color="grey" label="Simpan"></q-btn>
+                        <q-btn v-if="module.id && module.is_publish" @click="checkAndSubmitModule(0)" :disable="loading" rounded color="grey" label="Jadikan Draft"></q-btn>
+                        <q-btn v-if="module.id && !module.is_publish" @click="checkAndSubmitModule(0)" :disable="loading" rounded color="grey" label="Simpan Draft"></q-btn>
                     </q-item-section>
                     <q-item-section class="q-pl-sm">
-                        <q-btn rounded @click="checkAndSubmitModule(1)" :disable="loading" style="color:white;background-color:#840000" label="Publish"></q-btn>
+                        <q-btn v-if="module.id && module.is_publish" rounded @click="checkAndSubmitModule(1)" :disable="loading" style="color:white;background-color:#840000" label="Simpan"></q-btn>
+                        <q-btn v-if="module.id && !module.is_publish" rounded @click="checkAndSubmitModule(1)" :disable="loading" style="color:white;background-color:#840000" label="Publish"></q-btn>
                     </q-item-section>
                 </q-item>
             </q-form>
@@ -122,7 +124,7 @@ import {
 // import CreateMessage from "components/CreateModul/EditModul";
 export default {
     props: {
-        moduleId: null
+        moduleId: null,
     },
     components: {
         'SampulMaker': SampulMaker
@@ -215,6 +217,11 @@ export default {
                 grade: newVal
             });
         },
+        'module.is_publish': function (newVal, oldVal) {
+            this.$store.commit("ModuleForEdit/setIsPublish", {
+                is_publish: newVal
+            });
+        },
         'module.module_contents': {
             handler: function (newVal, oldVal) {
                 this.$store.commit("ModuleForEdit/setContents", {
@@ -261,16 +268,16 @@ export default {
                         ...content
                     }
                 })]
-            }
+            };
+            this.module.id = this.ModuleForEdit.build.module_id;
+            console.log('clone')
+            console.log(this.module)
         },
         getModuleData(moduleId) {
             this.$store.dispatch('Module/show', {
                 module_id: moduleId
             }).then(res => {
 
-                if (!res.data.template) {
-
-                }
                 /*
                 Set ID modul pada store Module ke ID yang dipilih saat ini
                 */
@@ -364,13 +371,14 @@ export default {
             //clone data modul dari store Module sebelumnya
             //this.getModuleData(this.ModuleForEdit.build.module_id)
             this.cloneModuleFromStore();
+
         },
         checkAndSubmitModule(is_publish) {
             this.$refs.myForm.validate().then(success => {
                 if (success) {
                     this.$q.dialog({
                         title: 'Konfirmasi',
-                        message: is_publish ? 'Modul akan disimpan dan dipublikasikan ke semua orang' : 'Modul akan disimpan sebagai draft',
+                        message: is_publish ? 'Modul akan disimpan dan dipublikasikan ke semua orang' : this.module.is_publish ? 'Modul akan disimpan sebagai draft, tidak bisa dilihat oleh pengguna lain' : 'Draft modul ini akan disimpan, tidak dipublish',
                         cancel: true,
                         persistent: true
                     }).onOk(() => {
@@ -452,12 +460,13 @@ export default {
         },
         submitModule(is_publish) {
             // console.log(this.module);
-            // return;
+            // return;s
             this.$store.dispatch("ModuleForEdit/store", this.module).then(res => {
                 this.$store.commit('ModuleForEdit/resetBuild');
                 this.$q.notify(is_publish ? 'Berhasil mengedit publish modul' : 'Berhasil mengedit draft modul')
                 //if (is_publish) this.$store.dispatch("Module/getPublishedModules");
-                this.$router.push('/modul/' + this.moduleId);
+                const path = res.data.is_publish ? '/modul/' + this.moduleId : '/profil';
+                this.$router.push(path);
             }).catch(err => {
                 console.log(err.response);
                 //return;

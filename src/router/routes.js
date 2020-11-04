@@ -151,6 +151,12 @@ const routes = [
   //       import ("pages/module/SearchPage.vue")
   // },
   {
+    path: "/module/search",
+    name: "modulesearch",
+    component: () =>
+        import ("pages/SearchPage.vue")
+  },
+  {
     path: "/login",
     name: "login",
     component: () =>

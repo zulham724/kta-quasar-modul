@@ -46,7 +46,7 @@
                             <div class="q-mb-sm">No anggota: {{Auth.auth.kta_id}}</div>
                             <div>{{Auth.auth.role.display_name}}</div>
                             <!--<div>admin</div>-->
-                            <div class="text-caption" style="overflow-wrap:break-word; white-space:pre-line">{{Auth.auth.profile.long_bio}}</div>
+                            <div v-linkified class="text-caption" style="overflow-wrap:break-word; white-space:pre-line">{{Auth.auth.profile.long_bio}}</div>
                         </q-item-label>
                     </q-item-section>
                 </q-item>

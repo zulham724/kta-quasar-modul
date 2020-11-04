@@ -164,6 +164,22 @@ const actions = {
                 });
         });
     },
+    destroy({commit}, payload){
+        return new Promise((resolve, reject) => {
+            axios
+                .delete(
+                    `${this.state.Setting.url}/api/v1/module/${payload.moduleId}`
+                )
+                .then(res => {
+                    //commit("set", { items: res.data.grades });
+                    resolve(res);
+                })
+                .catch(err => {
+                    reject(err);
+                    
+                });
+        });
+    },
     getModulesByEducationalLevel(){
         return new Promise((resolve, reject) => {
             axios
@@ -244,6 +260,7 @@ const actions = {
                 });
         });
     },
+   
     getUnpublishedModules({commit}){
         return new Promise((resolve, reject) => {
             axios
