@@ -55,7 +55,9 @@ export default {
     components: {
         EssentialLink
     },
-
+    created(){
+      this.$store.dispatch("EchoNotification/initNotification");
+    },
     data() {
         return {
             leftDrawerOpen: false,

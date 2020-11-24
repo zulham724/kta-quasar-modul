@@ -6,10 +6,10 @@
             <q-toolbar-title>
                 <div class="text-body2 text-weight-light" style="font-size:15px">Baca Modul</div>
             </q-toolbar-title>
-            <q-btn color="white" round flat icon="more_vert">
+            <q-btn v-if="module.user.id==Auth.auth.id" color="white" round flat icon="more_vert">
                 <q-menu>
                     <q-list style="width:150px;border:2px solid #840000">
-                        <q-item clickable class="q-pt-none q-pb-none">
+                        <!--<q-item clickable class="q-pt-none q-pb-none">
                             <q-item-section>
                                 <div clickable @click="$router.push('/modul/review')">
                                     <span class="material-icons" style="padding-right:6px">
@@ -18,7 +18,7 @@
                                     Lihat Penilai
                                 </div>
                             </q-item-section>
-                        </q-item>
+                        </q-item>-->
                         <q-item v-if="module.user.id==Auth.auth.id" clickable class="q-pt-none q-pb-none">
                             <q-item-section>
                                 <div clickable @click="$router.push('/edit/'+moduleId)">
@@ -29,7 +29,7 @@
                                 </div>
                             </q-item-section>
                         </q-item>
-                        <q-item clickable class="q-pt-none q-pb-none">
+                        <q-item @click="remove" v-if="module.user.id==Auth.auth.id" clickable class="q-pt-none q-pb-none">
                             <q-item-section>
                                 <div>
                                     <span class="material-icons" style="padding-right:6px">
@@ -183,13 +183,13 @@
                     </div>
                     <div class="col-4"></div>
                 </div>
-                <q-item class="text-center q-pa-md">
+                <q-item class="q-pa-md">
                     <q-item-section class="">
                         <q-item-label class="q-px-xl q-py-md">
-                            <q-select dense outlined class="" rounded bg-color="white" v-model="model" style="width:100%" option-label="name" option-value="id" :options="module.module_contents" label="Bab" />
+                            <q-select dense outlined class="" rounded bg-color="white" v-model="model" style="width:100%" option-label="name" option-value="id" :options="module.module_contents" label="Sub Bab" />
                         </q-item-label>
                         <q-item-label>
-                            <div class="q-mb-sm text-h5 text-weight-medium">
+                            <div class="text-center q-mb-sm text-h5 text-weight-medium">
                                 {{getModuleContent.name}}
                             </div>
                         </q-item-label>
@@ -289,6 +289,32 @@ export default {
         }
     },
     methods: {
+        remove() {
+            console.log(this.module)
+            this.$q.dialog({
+                title: 'Konfirmasi',
+                message: 'Hapus draft modul \'' + this.module.subject + '\'?',
+                cancel: true,
+                persistent: true
+            }).onOk(() => {
+                // console.log('>>>> OK')
+                this.$store.dispatch("Module/destroy", {
+                    moduleId: this.module.id
+                }).then(res => {
+                    this.$q.notify('Berhasil menghapus draft modul');
+                    this.$store.dispatch("Module/getUnpublishedModules");
+                    this.$store.dispatch("Module/getModulesCount")
+                    this.$router.push('/')
+                })
+
+            }).onOk(() => {
+                // console.log('>>>> second OK catcher')
+            }).onCancel(() => {
+                // console.log('>>>> Cancel')
+            }).onDismiss(() => {
+                // console.log('I am triggered on both OK and Cancel')
+            })
+        },
         like(moduleId) {
             this.$store.dispatch("Module/like", {
                 module_id: moduleId

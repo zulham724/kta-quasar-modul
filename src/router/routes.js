@@ -6,7 +6,8 @@ import store from "./../store";
 // cek auth apakah sudah login atau belum
 const auth = function(to, from, next) {
   let isLoggedIn = store().getters["Auth/isLoggedIn"];
-  if (isLoggedIn) {
+  let isUnAuthorized = store().getters["Auth/isUnAuthorized"];
+  if (isLoggedIn && !isUnAuthorized) {
       next();
   } else {
       next("/login");
@@ -134,12 +135,18 @@ const routes = [
             component: () =>
                 import ("pages/Cover/CoverEditPage.vue")
           },
+          // {
+          //   path: "/create/cover/new",
+          //   name: "newcover",
+          //   component: () =>
+          //       import ("pages/CreateCoverModul.vue")   
+          // },
           {
-            path: "/create/cover/new",
-            name: "newcover",
+            path: "/announcement",
+            beforeEnter: multiguard([auth]),
             component: () =>
-                import ("pages/CreateCoverModul.vue")   
-          },            
+                import ("pages/AnnouncementPage.vue")
+        }     
     ]
   },
   

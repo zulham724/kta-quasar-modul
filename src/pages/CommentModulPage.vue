@@ -15,15 +15,15 @@
         padding-right:0px;
         padding-top: 0px
         width:100%">
-                <q-item-section avatar v-if="module.module">
+                <q-item-section avatar v-if="module_.module">
                     <q-avatar class=" text-center" rounded size="18vw">
-                        <img :src="`${Setting.storageUrl}/${module.module.user.avatar}`">
+                        <img :src="`${Setting.storageUrl}/${module_.module.user.avatar}`">
                     </q-avatar>
                 </q-item-section>
-                <q-item-section top v-if="module.module">
-                    <div class="text-weight-bold" style="font-size:16px">{{module.module.user.name}}</div>
-                    <q-item-label class="text-weight-regular text-subtitle2" style="font-size:12px" v-if="module.module">
-                        {{module.module.name}}
+                <q-item-section top v-if="module_.module">
+                    <div class="text-weight-bold" style="font-size:16px">{{module_.module.user.name}}</div>
+                    <q-item-label class="text-weight-regular text-subtitle2" style="font-size:12px" v-if="module_.module">
+                        {{module_.module.name}}
                     </q-item-label>
                 </q-item-section>
             </q-item>
@@ -45,9 +45,9 @@
                     </q-input>
                 </q-item-section>
             </q-item>
-            <div v-if="module.comments">
+            <div v-if="module_.comments">
                 <q-infinite-scroll @load="onLoad" :offset="250">
-                    <q-intersection v-for="(comment, n) in module.comments.data" :key="n" style="min-height:100px">
+                    <q-intersection v-for="(comment, n) in module_.comments.data" :key="n" style="min-height:100px">
                         <comment-modul :comment="comment"></comment-modul>
                     </q-intersection>
                     <template v-slot:loading>
@@ -77,7 +77,7 @@ export default {
     },
     computed: {
         ...mapState(["Setting", "Module", "Auth", "ModuleComment"]),
-        module: function () {
+        module_: function () {
             const module_ = this.ModuleComment.items.find(e => e.module.id == this.moduleId);
             if (module_) return module_;
             return {};
@@ -127,7 +127,7 @@ export default {
             //alert('asu')
             this.$store.dispatch("ModuleComment/show", {
                 module_id: this.moduleId
-            })
+            });
         }
         // if (module_comment) {
         //     this.comments = module_comment;

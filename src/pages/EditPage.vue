@@ -47,7 +47,7 @@
                             <span class="material-icons" color="white" style="padding-right:5px">
                                 add
                             </span>
-                            Tambah Bab
+                            Tambah Sub Bab
                         </q-btn>
                     </q-card-section>
                     <q-card-section style="">
@@ -444,7 +444,7 @@ export default {
                             this.$store.commit("ModuleForEdit/setCanvasImage", {
                                 canvas_image: imageData
                             });
-                            this.submitModule();
+                            this.submitModule(is_publish);
                         });
 
                     }).onOk(() => {
@@ -480,8 +480,8 @@ export default {
         },
         addContent() {
             this.module.module_contents.push({
-                name: 'Judul bab',
-                value: 'Isi bab'
+                name: 'Sub bab',
+                value: 'Isi sub bab'
             })
         },
 

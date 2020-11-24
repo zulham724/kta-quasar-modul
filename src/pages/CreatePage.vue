@@ -48,7 +48,7 @@
                             <span class="material-icons" color="white" style="padding-right:5px">
                                 add
                             </span>
-                            Tambah Bab
+                            Tambah Sub Bab
                         </q-btn>
                     </q-card-section>
                     <q-card-section style="">
@@ -175,11 +175,11 @@ export default {
                 }
             })]
         }
-        console.log('babi')
+        // console.log('babi')
         console.log(this.module)
         if (this.module.contents.length == 0) this.module.contents.push({
-            name: 'Judul bab',
-            value: 'Isi bab'
+            name: 'Sub bab',
+            value: 'Isi sub bab'
         })
     },
     watch: {
@@ -316,7 +316,7 @@ export default {
                             this.$store.commit("Module/setCanvasImage", {
                                 canvas_image: imageData
                             });
-                            this.submitModule();
+                            this.submitModule(is_publish);
                         });
 
                     }).onOk(() => {
@@ -332,8 +332,8 @@ export default {
         },
         addContent() {
             this.module.contents.push({
-                name: 'Judul bab',
-                value: 'Isi bab'
+                name: 'Sub bab',
+                value: 'Isi sub bab'
             })
         },
 

@@ -19,6 +19,55 @@
             </div>
 
         </div>
+        <div class="row q-pt-md">
+        <div class="col-4">
+        <q-select
+            options-dense
+            @input="inputSurah"
+            dense
+            outlined
+            :option-label="(surah)=>surah.key+'. '+surah.name"
+            option-value="id"
+            :loading="loading"
+            :disable="loading"
+          v-model="surah"
+          use-input
+          hide-selected
+          fill-input
+          input-debounce="0"
+          :options="surahOptions"
+          @filter="filterFn"
+          hint="Pilih Surah"
+            >
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                No results
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+        </div>
+         <div class="col-8 q-pl-xs">
+            <q-select  
+               :loading="loading2"
+            :disable="loading2"
+            dense
+            outlined
+            hint="Pilih Ayat"
+            :option-label="(item)=>item.key+') '+(item.value.length>70?'....'+item.value.substr(0,70):item.value)"
+            option-value="id"
+            :options="ayahOptions"
+            v-model="ayah"
+            >
+            
+            </q-select>
+        </div>
+        
+      </div>
+      <div class="row q-pt-md justify-end">
+        <q-btn style="color:white;background-color:#840000" @click="copyAyah" rounded>Salin Ayat yang dipilih</q-btn>
+      </div>
     </q-page>
 </div>
 </template>
@@ -29,7 +78,9 @@ import {
 } from "vuex";
 import {
     debounce
-} from 'quasar'
+} from 'quasar';
+import { copyToClipboard } from 'quasar';
+
 // import CreateMessage from "components/CreateModul/EditModul";
 export default {
     props: {
@@ -39,9 +90,16 @@ export default {
     },
     data() {
         return {
+            surah: null,
+            ayah: null,
+            surahOptions: [],
+            ayahOptions: [],
+            surahOptionsAll: [],
             oldContent: '',
             editor: '',
             options: [],
+             loading:false,
+            loading2:false,   
             module: {
                 is_publish: true,
                 grade: null,
@@ -61,6 +119,18 @@ export default {
 
     },
     created: function () {
+        this.loading=true;
+        this.$store.dispatch("Surah/index").then(res=>{
+            this.surahOptionsAll = res.data;
+            this.surahOptions = [...this.surahOptionsAll.map((surah)=>{
+                return {...surah}
+            })];
+            // this.surah={...this.surahOptionsAll[0]}
+        }).finally(()=>{
+            this.loading=false;
+        });
+
+
         if (typeof this.moduleContentIndex == 'undefined') {
             this.$router.back();
         } else this.oldContent = this.editor = this.ModuleForEdit.build.module_contents[this.moduleContentIndex].value
@@ -88,6 +158,31 @@ export default {
         }, 500),
     },
     methods: {
+         copyAyah(){
+        if(!this.ayah)return;
+        if(this.$q.platform.is.mobile){
+            cordova.plugins.clipboard.copy(this.ayah.value);
+        }else{
+            copyToClipboard(this.ayah.value)
+        }
+      },
+        inputSurah(){
+            //alert(1)
+            this.ayahOptions=[];
+            this.ayah=null;
+            this.loading2=true;
+            this.$store.dispatch("Surah/show",{surahId:this.surah.id}).then(res=>{
+                this.ayahOptions = res.data.ayahs;
+            }).finally(()=>{
+                this.loading2=false;
+            })
+        },
+        filterFn (val, update, abort) {
+            update(() => {
+                const needle = val.toLowerCase()
+                this.surahOptions = this.surahOptionsAll.filter(v => v.name.toLowerCase().indexOf(needle) > -1)
+            })
+        },
         // addContent() {
         //     this.module.contents.push({
         //         name: 'Judul bab',

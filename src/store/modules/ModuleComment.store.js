@@ -72,7 +72,7 @@ const actions = {
                 .get(`${this.state.Setting.url}/api/v1/modules/${payload.module_id}/comments`)
                 .then(res => {
                     commit("set",res.data)
-                    resolve();
+                    resolve(res.data);
                 })
                 .catch(err => {
                     reject(err);

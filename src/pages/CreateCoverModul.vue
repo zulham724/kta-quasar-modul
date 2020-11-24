@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import VueFroala from 'vue-froala-wysiwyg';
+// import VueFroala from 'vue-froala-wysiwyg';
 // import froala from 'boot/vue-froala-wysiwyg';
 export default {
     name: 'app',

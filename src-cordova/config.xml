@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="org.agpaiidigital.modul" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="org.agpaiidigital.modul" version="1.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>MODUL DIGITAL</name>
     <description>Aplikasi modul digital untuk guru PAI AGPAII</description>
-    <author email="dev@cordova.apache.org" href="http://cordova.io">
-        Apache Cordova Team
+    <author email="ardata.indonesia@gmail.com" href="https://ardata.co.id">
+        CV ARDATA MEDIA
     </author>
     <content src="index.html" />
     <icon src="res/icon.png" />
@@ -23,4 +23,5 @@
         <allow-intent href="itms-apps:*" />
     </platform>
     <allow-navigation href="about:*" />
+    <preference name="android-targetSdkVersion" value="29" />
 </widget>
