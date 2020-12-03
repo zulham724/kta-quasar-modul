@@ -12,7 +12,7 @@
             </q-toolbar-title>
         </q-toolbar>
     </q-header>
-    <q-page-container>
+    <q-page>
         <q-infinite-scroll @load="onLoad" :offset="250">
             <q-list bordered class="rounded-borders">
                 <div v-if="loading">
@@ -32,7 +32,7 @@
                     </q-item>
                 </div>
                 <div v-if="items.data">
-                    <q-intersection v-for="item in items.data" :key="item.id" :style="`min-height:15vh;width: 100vw`" transition="scale">
+                    <q-intersection v-for="item in items.data" :key="item.id" :style="`min-height:20vh`" transition="scale">
                         <item-component :module="item"></item-component>
 
                     </q-intersection>
@@ -45,7 +45,7 @@
                 </div>
             </template>
         </q-infinite-scroll>
-    </q-page-container>
+    </q-page>
 </q-layout>
 </template>
 

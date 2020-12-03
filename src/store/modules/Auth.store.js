@@ -22,6 +22,8 @@ const mutations = {
     auth_success(state, payload) {
         state.token = payload.token;
         state.auth = payload.auth;
+        state.is_unauthorized = false;
+
     },
     setAuth(state, payload) {
         state.auth = payload.auth;

@@ -21,34 +21,40 @@ const routes = [
     beforeEnter: multiguard([auth]),
     children: [
           { path: '', 
+            beforeEnter: multiguard([auth]),
             component: () => import('pages/HomePage.vue') 
           },
           {
             path: "/editcoverdesign",
             name: "editcoverdesign",
+            beforeEnter: multiguard([auth]),
             component: () => import("pages/Module/EditCoverDesign.vue"),
             props:true,
           },
           {
             path: "/edit/editcoverdesign",
             name: "editcoverdesignedit",
+            beforeEnter: multiguard([auth]),
             component: () => import("pages/ModuleForEdit/EditCoverDesign.vue"),
             props:true,
           },
           {
             path: "/create",
             name: "create",
+            beforeEnter: multiguard([auth]),
             component: () => import("pages/CreatePage.vue")
           },
           {
             path: "/edit/:moduleId",
             name: "edit",
+            beforeEnter: multiguard([auth]),
             component: () => import("pages/EditPage.vue"),
             props:true,
           },
           {
             path: "/modulecontent/edit",
             name: "modulecontentedit",
+            beforeEnter: multiguard([auth]),
             component: () => import("pages/Module/EditContent.vue"),
             props:true
 
@@ -56,6 +62,7 @@ const routes = [
           {
             path: "/modulecontentforedit/edit",
             name: "modulecontenteditforedit",
+            beforeEnter: multiguard([auth]),
             component: () => import("pages/ModuleForEdit/EditContent.vue"),
             props:true
 
@@ -63,22 +70,26 @@ const routes = [
           {
             path: "/category/newest",
             name: "newest",
+            beforeEnter: multiguard([auth]),
             component: () => import("pages/NewestModulPage.vue")
           },
           {
             path: "/category/tk",
             name: "tk",
+            beforeEnter: multiguard([auth]),
             component: () =>
                 import ("pages/TKPage.vue")   
           },
           {
             path: "/category/sd",
+            beforeEnter: multiguard([auth]),
             name: "sd",
             component: () =>
                 import ("pages/SDPage.vue")   
           },
           {
             path: "/category/smp",
+            beforeEnter: multiguard([auth]),
             name: "smp",
             component: () =>
                 import ("pages/SMPPage.vue")   
@@ -86,23 +97,27 @@ const routes = [
           {
             path: "/category/sma",
             name: "sma",
+            beforeEnter: multiguard([auth]),
             component: () => import("pages/SMAPage.vue")
           },
           {
             path: "/category/smk",
             name: "smk",
+            beforeEnter: multiguard([auth]),
             component: () =>
                 import ("pages/SMKPage.vue")   
           },
           {
             path: "/category/slb",
             name: "slb",
+            beforeEnter: multiguard([auth]),
             component: () =>
                 import ("pages/SLBPage.vue")   
           },    
           {
             path: "/modul/:moduleId",
             name: "modul",
+            beforeEnter: multiguard([auth]),
             component: () => import("pages/ModulPage.vue"),
             props:true
 
@@ -110,21 +125,25 @@ const routes = [
           {
             path: "/profil",
             name: "profil",
+            beforeEnter: multiguard([auth]),
             component: () => import("pages/ProfilPage.vue")
           },
           {
             path: "/modulecomments/:moduleId",
             name: "comment",
+            beforeEnter: multiguard([auth]),
             component: () => import("pages/CommentModulPage.vue"),
             props:true
           },
           {
             path: "/modulereview",
             name: "review",
+            beforeEnter: multiguard([auth]),
             component: () => import("pages/ReviewModulPage.vue")
           },
           {
             path: "/create/cover",
+            beforeEnter: multiguard([auth]),
             name: "cover",
             component: () =>
                 import ("pages/Cover/CoverPage.vue")
@@ -132,6 +151,7 @@ const routes = [
           {
             path: "/editcover",
             name: "editcover",
+            beforeEnter: multiguard([auth]),
             component: () =>
                 import ("pages/Cover/CoverEditPage.vue")
           },
@@ -143,6 +163,7 @@ const routes = [
           // },
           {
             path: "/announcement",
+            
             beforeEnter: multiguard([auth]),
             component: () =>
                 import ("pages/AnnouncementPage.vue")

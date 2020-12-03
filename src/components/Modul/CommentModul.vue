@@ -4,7 +4,7 @@
       padding-right:0px;
       padding-bottom:0px">
         <q-item-section avatar top>
-            <q-avatar class=" text-center" rounded size="18vw" v-if="comment.user">
+            <q-avatar class=" text-center" rounded size="70px" v-if="comment.user">
                 <img :src="`${Setting.storageUrl}/${comment.user.avatar}`">
             </q-avatar>
         </q-item-section>

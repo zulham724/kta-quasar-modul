@@ -26,7 +26,7 @@
                 </template>
                 <template v-slot:color="{item}">
                     Warna teks
-                    <q-color v-model="item.color" />
+                    <q-color  default-view="palette" v-model="item.color" />
 
                 </template>
                 <template v-slot:size="{item}">

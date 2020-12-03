@@ -105,8 +105,8 @@
                         <q-tab-panel name="modul" class="width:100%" style="padding-top:10px;">
                             <q-item class="full-width q-pa-none">
                                 <q-item-section avatar>
-                                    <q-avatar rounded size="20vw">
-                                        <img v-if="module.user.avatar" :src="`${Setting.storageUrl}/${module.user.avatar}`" />
+                                    <q-avatar rounded size="100px">
+                                        <q-img v-if="module.user.avatar" :src="`${Setting.storageUrl}/${module.user.avatar}`"  />
                                     </q-avatar>
                                 </q-item-section>
                                 <q-item-section>

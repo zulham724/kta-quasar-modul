@@ -16,7 +16,7 @@
         padding-top: 0px
         width:100%">
                 <q-item-section avatar v-if="module_.module">
-                    <q-avatar class=" text-center" rounded size="18vw">
+                    <q-avatar class=" text-center" rounded size="80px">
                         <img :src="`${Setting.storageUrl}/${module_.module.user.avatar}`">
                     </q-avatar>
                 </q-item-section>
@@ -32,7 +32,7 @@
             </div>
             <q-item class="" style="padding-left:0px;padding-top: 0px; padding-right:0px">
                 <q-item-section avatar>
-                    <q-avatar class=" text-center" rounded size="18vw">
+                    <q-avatar class=" text-center" rounded size="70px">
                         <q-img :src="`${Setting.storageUrl}/${Auth.auth.avatar}`"></q-img>
                     </q-avatar>
                 </q-item-section>

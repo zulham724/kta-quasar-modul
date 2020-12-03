@@ -179,7 +179,7 @@ export default {
 
                     isLoaded = img.complete && img.naturalHeight !== 0;
                     this.loading = false;
-                    //stage.update();
+                    this.stage.update();
                     console.log('END initialize sampul maker')
                     this.isInitialized = true;
                     resolve(this.stage)
@@ -321,6 +321,10 @@ export default {
             return this.itemsData;
         },
         toDataURL() {
+            this.containers.forEach(container=>{
+                container.getChildAt(0).alpha = 0;
+            });
+            this.stage.update();
             return this.stage.toDataURL();
         },
         isLoading() {

@@ -165,6 +165,7 @@ export default {
         }else{
             copyToClipboard(this.ayah.value)
         }
+        this.$q.notify("Ayat telah tersalin");
       },
         inputSurah(){
             //alert(1)

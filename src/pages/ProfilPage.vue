@@ -34,7 +34,7 @@
             <div class="col-3 q-pa-md">
                 <q-item style="padding:0px">
                     <q-item-section avatar>
-                        <q-avatar class=" text-center" rounded size="22vw">
+                        <q-avatar class=" text-center" rounded size="100px">
                             <img :src="`${Setting.storageUrl}/${Auth.auth.avatar}`" />
                         </q-avatar>
                     </q-item-section>

@@ -29,7 +29,7 @@
                             <div class="text-caption">Pemberitahuan akan muncul ada anggota lain menyukai/mengomentari postingan/komentar Anda</div>
                         </q-card-section>
                         <q-card-section class="text-center">
-                            <q-btn no-caps rounded color="teal" style="color:white" @click="$router.push('/')">
+                            <q-btn no-caps rounded color="deep-purple" style="color:white" @click="$router.push('/')">
                                 Beranda
                             </q-btn>
                         </q-card-section>
@@ -51,7 +51,7 @@
                 </div>
                 <template v-slot:loading>
                     <div class="row justify-center q-my-md">
-                        <q-spinner-dots color="teal" size="40px" />
+                        <q-spinner-dots color="deep-purple" size="40px" />
                     </div>
                 </template>
             </q-infinite-scroll>

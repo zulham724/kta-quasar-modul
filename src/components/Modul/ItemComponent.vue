@@ -1,5 +1,5 @@
 <template>
-<div clickable @click="$router.push('/modul/'+module.id)">
+<div clickable @click="$router.push('/modul/'+module.id)" style="width:100%">
     <div class="row q-ml-xs q-mt-none q-gutter-xs">
         <div class="col-4">
             <q-img no-default-spinner :src="`${Setting.storageUrl}/${module.template.image}`"></q-img>

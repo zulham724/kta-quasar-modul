@@ -3,8 +3,8 @@
     <q-item class="q-pa-sm" style="background-color:white;
       border-radius:10px">
         <q-item-section avatar top style="padding-right:10px" clickable @click="$router.push('/edit/'+module.id)">
-            <q-avatar square size="25vw">
-                <img :src="`${Setting.storageUrl}/${module.template.image}`" style="width:80%; transform: scale(1,1)" />
+            <q-avatar square size="150px">
+                <q-img :ratio="1" :src="`${Setting.storageUrl}/${module.template.image}`" style="width:80%; transform: scale(1,1)" />
             </q-avatar>
         </q-item-section>
         <q-item-section top>
