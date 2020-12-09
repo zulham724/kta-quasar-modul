@@ -307,7 +307,8 @@ export default {
                             this.sampulMakerItems[i].color = item.color;
                             this.sampulMakerItems[i].size = item.size;
                         });
-                        this.$refs.sampulMaker1.setImage(image);
+                        const img2 = this.$q.platform.is.mobile?image:this.Setting.url+'/reverseproxy?url='+image;
+                        this.$refs.sampulMaker1.setImage(img2);
                         this.$refs.sampulMaker1.setItems(this.sampulMakerItems)
                         this.$refs.sampulMaker1.initialize().then(res => {
                             const imageData = this.$refs.sampulMaker1.toDataURL();

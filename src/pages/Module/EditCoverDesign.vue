@@ -86,7 +86,8 @@ export default {
     mounted() {
         if (!this.img) return;
         this.loading = true;
-        this.$refs.myCanvas.setImage(this.img);
+        const img2 = this.$q.platform.is.mobile?this.img:this.Setting.url+'/reverseproxy?url='+this.img;
+        this.$refs.myCanvas.setImage(img2);
         this.$refs.myCanvas.setItems(this.items);
         this.$refs.myCanvas.initialize().then(res => {
             this.loading = false;
