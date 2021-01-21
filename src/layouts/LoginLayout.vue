@@ -7,9 +7,13 @@
                 <q-input v-model="credential.username" color="red-10" label="Email" lazy-rules :rules="[
                 val => (val && val.length > 0) || 'Please type something'
               ]"></q-input>
-                <q-input v-model="credential.password" type="password" color="red-10" label="Password" lazy-rules :rules="[
+                <q-input v-model="credential.password" :type="show_password?'text':'password'" color="red-10" label="Password" lazy-rules :rules="[
                 val => (val && val.length > 0) || 'Please type something'
-              ]"></q-input>
+              ]">
+               <template v-slot:append>
+                  <q-btn flat round color="red-10" :icon="show_password?'visibility':'visibility_off'" @click="show_password=!show_password" />
+                </template>
+              </q-input>
             </q-form>
         </div>
         <div class="q-pa-md text-center">
@@ -29,7 +33,8 @@ export default {
     data() {
         return {
             credential: {},
-            loading: false
+            loading: false,
+            show_password:false,
         };
     },
     computed: {

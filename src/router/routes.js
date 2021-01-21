@@ -1,6 +1,6 @@
 import multiguard from "vue-router-multiguard";
 import store from "./../store";
-//import moment from "moment";
+import moment from "moment";
 //import { Notify } from "quasar";
 
 // cek auth apakah sudah login atau belum
@@ -14,11 +14,26 @@ const auth = function(to, from, next) {
   }
 };
 
+// kalo belum bayar atau masa aktif berakhir cma bisa lihat halaman trial
+const isTrial = (from, to, next) => {
+  store().dispatch('Auth/getAuth').then(res => {
+      let user_activated_at = store().getters['Auth/auth'].user_activated_at
+      const monthDifference = moment(new Date()).diff(
+          new Date(user_activated_at),
+          "months",
+          true
+      );
+      // console.log(user_activated_at, monthDifference < 6, store().getters['Auth/auth'], res.data)
+      if (user_activated_at != null && monthDifference < 6) from.name == 'trial' ? next('/') : next()
+      else from.name != 'trial' ? next('/trial') : next()
+  })
+};
+
 const routes = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
-    beforeEnter: multiguard([auth]),
+    beforeEnter: multiguard([auth, isTrial]),
     children: [
           { path: '', 
             beforeEnter: multiguard([auth]),
@@ -178,6 +193,19 @@ const routes = [
   //   component: () =>
   //       import ("pages/module/SearchPage.vue")
   // },
+  {
+    path: "/trial",
+    name: "trial",
+    beforeEnter: multiguard([isTrial]),
+    component: () =>
+        import ("pages/TrialPage.vue")
+  },
+  {
+    path: "/payment",
+    name: "payment",
+    component: () =>
+        import ("pages/PaymentPage.vue")
+  },
   {
     path: "/module/search",
     name: "modulesearch",

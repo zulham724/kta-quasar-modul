@@ -19,7 +19,7 @@ module.exports = function (/* ctx */) {
     // https://quasar.dev/quasar-cli/boot-files
     boot: [
       
-      "vue-linkify",'pusher','easeljs','axios','moment','vue-virtual-scroller'
+      'app-version',"vue-linkify",'pusher','easeljs','axios','moment','vue-virtual-scroller'
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
