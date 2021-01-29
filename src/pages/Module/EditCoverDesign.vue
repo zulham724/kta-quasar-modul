@@ -86,7 +86,9 @@ export default {
     mounted() {
         if (!this.img) return;
         this.loading = true;
-        const img2 = this.$q.platform.is.mobile?this.img:this.Setting.url+'/reverseproxy?url='+this.img;
+        //jika platform'nya mobile dan tidak dalam proses debug, maka gambar modul diakses tanpa reverse proxy 
+        const img2 = this.$q.platform.is.mobile && !process.env.DEV?this.img:this.Setting.url+'/reverseproxy?url='+this.img;
+        console.log('img2',img2);
         this.$refs.myCanvas.setImage(img2);
         this.$refs.myCanvas.setItems(this.items);
         this.$refs.myCanvas.initialize().then(res => {

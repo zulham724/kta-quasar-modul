@@ -146,7 +146,16 @@ export default {
                 module_contents: [],
                 template: null,
             },
-            sampulMakerItems: []
+            sampulMakerItems: [],
+             content: {
+                name: "Sub bab",
+                value: "Isi sub bab",
+                audio: {
+                    file: null,
+                    nativePath: null,
+                    blob: null,
+                },
+            }, 
         }
     },
     computed: {
@@ -303,7 +312,8 @@ export default {
                     module_contents: [
                         ...res.data.module_contents.map(item => {
                             return {
-                                ...item
+                                ...item,
+                                audio:{...item.audio},
                             }
                         })
                     ],
@@ -360,7 +370,7 @@ export default {
 
             }).catch(err => {
                 //alert(err)
-                //console.log(err)
+                console.log('error ',err)
                 this.$q.notify('Data tidak ditemukan');
                 this.$router.back();
             })
@@ -472,7 +482,7 @@ export default {
                 const path = res.data.is_publish ? '/modul/' + this.moduleId : '/profil';
                 this.$router.push(path);
             }).catch(err => {
-                console.log(err.response);
+                console.log('error',err);
                 //return;
                 if (err.response.data.errors.template) {
                     this.$q.notify('Sampul modul harus dipilih');
@@ -483,10 +493,7 @@ export default {
 
         },
         addContent() {
-            this.module.module_contents.push({
-                name: 'Sub bab',
-                value: 'Isi sub bab'
-            })
+            this.module.module_contents.push(this.content)
         },
 
         confirmDelete(index, name) {
