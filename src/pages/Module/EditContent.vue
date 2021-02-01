@@ -77,7 +77,7 @@
             <q-btn
               style="color: white; background-color: #840000"
               @click="copyAyah"
-              rounded
+              
               >Salin Ayat yang dipilih</q-btn
             >
           </div>
@@ -94,7 +94,7 @@
                 @click="removeAudio"
                 color="red"
                 icon="close"
-                class="q-my-xs"
+                size="sm"
               ></q-btn>
             </div>
             <div class="" v-if="audio.file">
@@ -104,7 +104,7 @@
                 @click="playAudio"
                 color="blue"
                 icon="play_arrow"
-                class="q-my-xs"
+                size="sm"
               ></q-btn>
               <q-btn
                 v-else
@@ -112,14 +112,15 @@
                 @click="stopAudio"
                 color="blue"
                 icon="stop"
-                class="q-my-xs"
+                size="sm"
               ></q-btn>
             </div>
             <div class="self-center">
               <q-btn
                 style="color: white; background-color: #840000"
                 icon="mic"
-                rounded
+                round
+                size="sm"
                 @click="recordAudio(moduleContentIndex)"
               >
                 <!-- <span class="text-caption" v-if="!audio.file">Tambah Suara</span>

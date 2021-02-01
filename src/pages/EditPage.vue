@@ -353,10 +353,10 @@ export default {
                 ///////////////////////////////
                 //section untuk render canvas//
                 const img=`${this.Setting.storageUrl}/${canvasData.image}`;
-                const img2 = this.$q.platform.is.mobile?img:this.Setting.url+'/reverseproxy?url='+img;
+                const img2 = this.$q.platform.is.mobile && !process.env.DEV?img:this.Setting.url+'/reverseproxy?url='+img;
+                console.log('img2',img2);
                 this.$refs.sampulMaker2.setImage(img2);
                 this.$refs.sampulMaker2.setItems(this.sampulMakerItems);
-
                 this.$refs.sampulMaker2.initialize().then(res => {
                     const imageData = res.toDataURL();
                     //console.log(imageData)
@@ -448,7 +448,8 @@ export default {
                             this.sampulMakerItems[i].size = item.size;
                         });
                         // this.$refs.sampulMaker2.setImage(image);
-                        const img2 = this.$q.platform.is.mobile?image:this.Setting.url+'/reverseproxy?url='+image;
+                        const img2 = this.$q.platform.is.mobile && !process.env.DEV?image:this.Setting.url+'/reverseproxy?url='+image;
+                        console.log('img2',img2)
                         this.$refs.sampulMaker2.setImage(img2);
                         this.$refs.sampulMaker2.setItems(this.sampulMakerItems)
                         this.$refs.sampulMaker2.initialize().then(res => {

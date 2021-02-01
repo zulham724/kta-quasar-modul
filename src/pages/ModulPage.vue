@@ -277,6 +277,7 @@
                 color="red"
                 icon="play_arrow"
                 class="q-my-xs"
+                size="sm"
               ></q-btn>
               <q-btn
                 v-else
